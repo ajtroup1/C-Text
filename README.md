@@ -17,4 +17,4 @@ I am currently writing this in my text editor!
 - Custom scrollbars
 - Right click functionality
 - Git integration (expert level difficulty) 
-- Tab still acting up sometimes
+- Tab still acting up sometimes 

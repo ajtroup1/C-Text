@@ -1,16 +1,15 @@
-import { Directory, _File } from '@renderer/types/Directory.d'
+import { Directory, _File, FileInfo } from '@renderer/types/Directory.d'
 import '../../assets/css/browser.css'
 import { useState, useEffect } from 'react'
 
 interface BrowserProps {
   Workspace: Directory | null
-  selectFile: (file: _File) => void
+  selectFile: (fileoath: string) => void
 }
 
 function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
   const [repo, setRepo] = useState<Directory | null>(null)
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set())
-  const [selectedFile, setSelectedFile] = useState<_File | null>(null)
 
   useEffect(() => {
     setRepo(Workspace)
@@ -34,17 +33,17 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
     return (
       <div key={folderPath}>
         <div
-          style={{ paddingLeft: `${level * 20}px`, cursor: 'pointer' }}
+          style={{ paddingLeft: `${level * 10}px`, cursor: 'pointer' }}
           onClick={() => toggleFolder(folderPath)}
         >
           <span>{expandedFolders.has(folderPath) ? '[-]' : '[+]'}</span> {directory.name}
         </div>
 
         {directory.files && (
-          <div style={{ paddingLeft: `${(level + 1) * 20}px` }}>
+          <div style={{ paddingLeft: `${(level + 1) * 10}px` }}>
             {directory.files.map((file) => (
-              <div key={file.path} style={{ marginBottom: '5px' }}>
-                <span style={{ cursor: 'pointer' }} onClick={() => handleSelectFile(file)}>
+              <div key={file.key} style={{ marginBottom: '5px' }}>
+                <span style={{ cursor: 'pointer' }} onClick={() => handleSelectFile(file.key)}>
                   - {file.name}
                 </span>
               </div>
@@ -52,7 +51,7 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
           </div>
         )}
         {expandedFolders.has(folderPath) && directory.folders && (
-          <div style={{ paddingLeft: `${(level + 1) * 20}px` }}>
+          <div style={{ paddingLeft: `${(level + 1) * 10}px` }}>
             {directory.folders.map((subfolder) => renderDirectory(subfolder, level + 1))}
           </div>
         )}
@@ -60,14 +59,18 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
     )
   }
 
-  const handleSelectFile = async (file: _File) => {
-    setSelectedFile(file) // First, set the file as selected
-    try {
-      const content = await fetchFileContent(file) // Fetch content asynchronously
-      const updatedFile = { ...file, content } // Update the file with content
-      selectFile(updatedFile) // Pass the updated file to the parent component
-    } catch (error) {
-      console.error('Error fetching file content:', error)
+  const handleSelectFile = async (fileKey: string) => {
+    // Search for the file where its key matches the passed fileKey
+    console.log("key: ", fileKey)
+    console.log("repo files: ", repo?.files)
+    const selectedFile = repo?.files.find((file) => file.key === fileKey)
+
+    // If the file is found, select it
+    if (selectedFile) {
+      console.log('File found:', selectedFile)
+      selectFile(selectedFile.path)
+    } else {
+      console.log('File not found')
     }
   }
 

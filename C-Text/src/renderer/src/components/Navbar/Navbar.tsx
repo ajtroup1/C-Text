@@ -1,6 +1,7 @@
 import React from 'react'
 import '../../assets/css/navbar.css'
-import { Directory, _File } from '../../types/Directory.d'
+import { Directory, _File, FileInfo } from '../../types/Directory.d'
+import { v4 as uuidv4 } from 'uuid'
 
 interface NavbarProps {
   onSelectFile: (file: _File) => void
@@ -24,9 +25,7 @@ function Navbar({ onSelectFile, onSelectFolder }: NavbarProps): JSX.Element {
           const fileContent = reader.result as string
 
           const fileWithContent: _File = {
-            name: selectedFile.name,
-            path: selectedFile.path,
-            fileSizeBytes: selectedFile.size,
+            ...selectedFile,
             content: fileContent
           }
 
@@ -72,6 +71,7 @@ function Navbar({ onSelectFile, onSelectFolder }: NavbarProps): JSX.Element {
           folders: []
         }
 
+        let c = 0
         Array.from(selectedFolder).forEach((file) => {
           const parts = file.webkitRelativePath.split('/')
           const folderPath = parts.slice(0, -1).join('/')
@@ -80,15 +80,15 @@ function Navbar({ onSelectFile, onSelectFolder }: NavbarProps): JSX.Element {
           // Check if file or folder should be excluded
           if (excludedFilesRegex.test(file.webkitRelativePath)) return // Exclude based on full path
 
-          const fileObject: _File = {
-            path: folderPath + '/' + fileName,
+          const fileObject: FileInfo = {
+            path: selectedFolder[c].path,
             name: fileName,
-            fileSizeBytes: file.size,
-            content: '' // Assuming you will load file content later
+            relativePath: folderPath + '/' + fileName,
+            key: uuidv4()
           }
 
           // Helper function to find or create folders recursively
-          const addFileToFolder = (folder: Directory, pathParts: string[], file: _File) => {
+          const addFileToFolder = (folder: Directory, pathParts: string[], file: FileInfo) => {
             const [currentFolderName, ...remainingPath] = pathParts
 
             // If there's no more path to follow, this is where we should add the file
@@ -117,6 +117,7 @@ function Navbar({ onSelectFile, onSelectFolder }: NavbarProps): JSX.Element {
 
           // Start adding files starting from the root folder
           addFileToFolder(rootDirectory, folderPath.split('/'), fileObject)
+          c++
         })
 
         onSelectFolder(rootDirectory)
