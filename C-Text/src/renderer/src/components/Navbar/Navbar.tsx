@@ -103,7 +103,7 @@ function Navbar({ onSelectFile, onSelectFolder }: NavbarProps): JSX.Element {
             // If the subfolder doesn't exist, create it
             if (!subFolder) {
               subFolder = {
-                path: folder.path + '/' + currentFolderName,
+                path: selectedFolder[c].path + '/' + currentFolderName,
                 name: currentFolderName,
                 files: [],
                 folders: []

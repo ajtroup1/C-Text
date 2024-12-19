@@ -60,14 +60,36 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
   }
 
   const handleSelectFile = async (fileKey: string) => {
-    // Search for the file where its key matches the passed fileKey
-    console.log("key: ", fileKey)
-    console.log("repo files: ", repo?.files)
-    const selectedFile = repo?.files.find((file) => file.key === fileKey)
+    console.log('key: ', fileKey)
 
-    // If the file is found, select it
+    // Recursive function to search for a file in the directory structure
+    const findFileRecursive = (directory: Directory): FileInfo | undefined => {
+      // Search in the current folder's files
+      const file = directory.files.find((file) => file.key === fileKey)
+      if (file) return file
+
+      // Search recursively in all subfolders
+      for (const folder of directory.folders) {
+        const result = findFileRecursive(folder)
+        if (result) return result // Return as soon as we find the file
+      }
+
+      return undefined // Return undefined if file is not found
+    }
+
+    // Search for the file starting from the root directory
+    const selectedFile = repo ? findFileRecursive(repo) : undefined
+
+    const binaryFileExtensions =
+      /\.(exe|dll|png|jpg|jpeg|gif|bmp|pdf|zip|rar|7z|mp3|mp4|avi|mov|mkv|bin|iso|tar|gz)$/i
+
     if (selectedFile) {
       console.log('File found:', selectedFile)
+      // Check for binary extensions
+      if (binaryFileExtensions.test(selectedFile.name)) {
+        alert(`The selected file (${selectedFile.name}) cannot be displayed.`)
+        return
+      }
       selectFile(selectedFile.path)
     } else {
       console.log('File not found')
