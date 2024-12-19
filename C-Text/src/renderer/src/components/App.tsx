@@ -20,6 +20,10 @@ function App(): JSX.Element {
   useResizer(browserRef, editorRef, resizerRef, lowerMainRef)
   // --------------------------------------------------------
 
+// ------------------------------------------------
+
+// --------- --- 
+
   const handleFileSelect = (file: File) => {
     if (debugging) {
       console.log(file)
@@ -34,11 +38,12 @@ function App(): JSX.Element {
     setWorkspace(folder)
   }
 
-  const handleSaveFile = (updatedFile: File) => {
+  const handleSaveFile = async (updatedFile: File) => {
     if (debugging) {
       console.log(updatedFile)
     }
     setActiveFile(updatedFile)
+    await (window as any).electron.saveFile(updatedFile.path, updatedFile.content)
   }
 
   return (

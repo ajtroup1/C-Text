@@ -4,7 +4,7 @@ import { File } from '../../types/Directory.d'
 
 interface EditorProps {
   File: File | null
-  onSaveFile: (updatedFile: File) => void 
+  onSaveFile: (updatedFile: File) => void
 }
 
 function Editor({ File, onSaveFile }: EditorProps): JSX.Element {
@@ -14,17 +14,26 @@ function Editor({ File, onSaveFile }: EditorProps): JSX.Element {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const bufferTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
 
   const fileContentRef = useRef<string>('')
 
+  // Handle hanges FROM editor TO the parent component
   useEffect(() => {
     if (File && !activeFile) {
       setActiveFile(File)
       setFileContent(File.content)
-      fileContentRef.current = File.content 
+      fileContentRef.current = File.content
     }
   }, [File, activeFile])
+
+  // Handle changes FROM the parent component TO the editor
+  useEffect(() => {
+    if (File) {
+      setFileContent(File.content)
+      setActiveFile(File)
+    }
+  }, [File])
 
   const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = event.target.value
@@ -40,7 +49,7 @@ function Editor({ File, onSaveFile }: EditorProps): JSX.Element {
 
     typingTimeoutRef.current = setTimeout(() => {
       bufferTimeoutRef.current = setTimeout(() => {
-        handleSave() 
+        handleSave()
       }, 250)
     }, 1000)
   }
@@ -48,54 +57,48 @@ function Editor({ File, onSaveFile }: EditorProps): JSX.Element {
   const handleSave = () => {
     if (activeFile && fileContentRef.current !== activeFile.content) {
       const updatedFile = { ...activeFile, content: fileContentRef.current }
-      onSaveFile(updatedFile) 
+      onSaveFile(updatedFile)
     }
   }
 
   // Handle Tab key press to insert spaces
   const handleTabPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Tab') {
-      event.preventDefault(); // Prevent the default tab behavior
+      event.preventDefault() // Prevent default tab behavior
 
-      if (textareaRef.current) {
-        const cursorPosition = textareaRef.current.selectionStart;
-        const scrollPosition = textareaRef.current.scrollTop;
+      const textarea = textareaRef.current
+      if (textarea) {
+        const cursorStart = textarea.selectionStart
+        const cursorEnd = textarea.selectionEnd
 
-        // Insert two spaces at the cursor position
-        const updatedContent =
-          fileContent.slice(0, cursorPosition) + '  ' + fileContent.slice(cursorPosition);
+        const newContent = fileContent.slice(0, cursorStart) + '    ' + fileContent.slice(cursorEnd) // 4 spaces
 
-        // Update the file content
-        setFileContent(updatedContent);
+        setFileContent(newContent)
 
-        // Move the cursor to the right after the inserted spaces
-        setTimeout(() => {
-          if (textareaRef.current) {
-            // Set the cursor position to right after the inserted spaces
-            textareaRef.current.selectionStart = textareaRef.current.selectionEnd = cursorPosition + 2;
-
-            // Restore the scroll position to prevent jumping
-            textareaRef.current.scrollTop = scrollPosition;
-          }
-        }, 0);
+        // Set the cursor position to right after the inserted spaces
+        requestAnimationFrame(() => {
+          textarea.selectionStart = textarea.selectionEnd = cursorStart + 4
+        })
       }
     }
-  };
+  }
 
   useEffect(() => {
     if (textareaRef.current) {
       // Ensure that cursor remains after content changes
-      const cursorPosition = textareaRef.current.selectionStart;
-      textareaRef.current.selectionStart = textareaRef.current.selectionEnd = cursorPosition;
+      const cursorPosition = textareaRef.current.selectionStart
+      textareaRef.current.selectionStart = textareaRef.current.selectionEnd = cursorPosition
     }
-  }, [fileContent]);
+  }, [fileContent])
 
   return (
     <div className="editor-main">
       {activeFile ? (
         <div className="file-chosen-editor-container">
           <div className="filename-editor-container">
-            <p>{activeFile.name} ({activeFile.path})</p>
+            <p>
+              {activeFile.name} ({activeFile.path})
+            </p>
           </div>
           <div className="editor-main-content-container">
             <textarea
