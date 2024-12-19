@@ -14,6 +14,8 @@ function Editor({ File, onSaveFile }: EditorProps): JSX.Element {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const bufferTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
   const fileContentRef = useRef<string>('')
 
   useEffect(() => {
@@ -50,6 +52,44 @@ function Editor({ File, onSaveFile }: EditorProps): JSX.Element {
     }
   }
 
+  // Handle Tab key press to insert spaces
+  const handleTabPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Tab') {
+      event.preventDefault(); // Prevent the default tab behavior
+
+      if (textareaRef.current) {
+        const cursorPosition = textareaRef.current.selectionStart;
+        const scrollPosition = textareaRef.current.scrollTop;
+
+        // Insert two spaces at the cursor position
+        const updatedContent =
+          fileContent.slice(0, cursorPosition) + '  ' + fileContent.slice(cursorPosition);
+
+        // Update the file content
+        setFileContent(updatedContent);
+
+        // Move the cursor to the right after the inserted spaces
+        setTimeout(() => {
+          if (textareaRef.current) {
+            // Set the cursor position to right after the inserted spaces
+            textareaRef.current.selectionStart = textareaRef.current.selectionEnd = cursorPosition + 2;
+
+            // Restore the scroll position to prevent jumping
+            textareaRef.current.scrollTop = scrollPosition;
+          }
+        }, 0);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      // Ensure that cursor remains after content changes
+      const cursorPosition = textareaRef.current.selectionStart;
+      textareaRef.current.selectionStart = textareaRef.current.selectionEnd = cursorPosition;
+    }
+  }, [fileContent]);
+
   return (
     <div className="editor-main">
       {activeFile ? (
@@ -59,8 +99,10 @@ function Editor({ File, onSaveFile }: EditorProps): JSX.Element {
           </div>
           <div className="editor-main-content-container">
             <textarea
-              value={fileContent} 
-              onChange={handleContentChange} 
+              ref={textareaRef}
+              value={fileContent}
+              onChange={handleContentChange}
+              onKeyDown={handleTabPress}
               className="editor-textarea"
             />
           </div>
