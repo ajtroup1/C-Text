@@ -16,14 +16,14 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
   }, [Workspace])
 
   const toggleFolder = (folderPath: string) => {
-    setExpandedFolders((prev) => {
-      const newExpandedFolders = new Set(prev)
-      if (newExpandedFolders.has(folderPath)) {
-        newExpandedFolders.delete(folderPath)
+    setExpandedFolders((prevExpanded) => {
+      const newExpanded = new Set(prevExpanded)
+      if (newExpanded.has(folderPath)) {
+        newExpanded.delete(folderPath) // Collapse the folder
       } else {
-        newExpandedFolders.add(folderPath)
+        newExpanded.add(folderPath) // Expand the folder
       }
-      return newExpandedFolders
+      return newExpanded
     })
   }
 
@@ -39,20 +39,22 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
           <span>{expandedFolders.has(folderPath) ? '[-]' : '[+]'}</span> {directory.name}
         </div>
 
-        {directory.files && (
+        {/* Only load files and subfolders if the folder is expanded */}
+        {expandedFolders.has(folderPath) && (
           <div style={{ paddingLeft: `${(level + 1) * 10}px` }}>
-            {directory.files.map((file) => (
-              <div key={file.key} style={{ marginBottom: '5px' }}>
-                <span style={{ cursor: 'pointer' }} onClick={() => handleSelectFile(file.key)}>
-                  - {file.name}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-        {expandedFolders.has(folderPath) && directory.folders && (
-          <div style={{ paddingLeft: `${(level + 1) * 10}px` }}>
-            {directory.folders.map((subfolder) => renderDirectory(subfolder, level + 1))}
+            {/* Render files */}
+            {directory.files &&
+              directory.files.map((file) => (
+                <div key={file.key} style={{ marginBottom: '5px' }}>
+                  <span style={{ cursor: 'pointer' }} onClick={() => handleSelectFile(file.key)}>
+                    - {file.name}
+                  </span>
+                </div>
+              ))}
+
+            {/* Render subfolders */}
+            {directory.folders &&
+              directory.folders.map((subfolder) => renderDirectory(subfolder, level + 1))}
           </div>
         )}
       </div>
