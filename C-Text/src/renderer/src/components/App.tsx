@@ -6,6 +6,7 @@ import { Directory, File } from '@renderer/types/Directory.d'
 import { useResizer } from '../hooks/useResizer'
 
 function App(): JSX.Element {
+  const [debugging, setDebugging] = useState<boolean>(true)
   const [workspace, setWorkspace] = useState<Directory | null>(null)
   const [activeFile, setActiveFile] = useState<File | null>(null)
 
@@ -20,12 +21,24 @@ function App(): JSX.Element {
   // --------------------------------------------------------
 
   const handleFileSelect = (file: File) => {
+    if (debugging) {
+      console.log(file)
+    }
     setActiveFile(file)
   }
 
   const handleFolderSelect = (folder: Directory) => {
-    console.log(folder)
+    if (debugging) {
+      console.log(folder)
+    }
     setWorkspace(folder)
+  }
+
+  const handleSaveFile = (updatedFile: File) => {
+    if (debugging) {
+      console.log(updatedFile)
+    }
+    setActiveFile(updatedFile)
   }
 
   return (
@@ -37,7 +50,7 @@ function App(): JSX.Element {
         </div>
         <div className="resizer" ref={resizerRef}></div>
         <div className="editor-container" ref={editorRef}>
-          <Editor File={activeFile} />
+          <Editor File={activeFile} onSaveFile={handleSaveFile} />
         </div>
       </div>
     </div>
