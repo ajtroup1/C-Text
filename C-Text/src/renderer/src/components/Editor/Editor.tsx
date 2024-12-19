@@ -1,14 +1,14 @@
 import { useEffect, useState, useRef } from 'react'
 import '../../assets/css/editor.css'
-import { File } from '../../types/Directory.d'
+import { _File } from '../../types/Directory.d'
 
 interface EditorProps {
-  File: File | null
-  onSaveFile: (updatedFile: File) => void
+  File: _File | null
+  onSaveFile: (updatedFile: _File) => void
 }
 
 function Editor({ File, onSaveFile }: EditorProps): JSX.Element {
-  const [activeFile, setActiveFile] = useState<File | null>(null)
+  const [activeFile, setActiveFile] = useState<_File | null>(null)
   const [fileContent, setFileContent] = useState<string>('')
 
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -71,13 +71,13 @@ function Editor({ File, onSaveFile }: EditorProps): JSX.Element {
         const cursorStart = textarea.selectionStart
         const cursorEnd = textarea.selectionEnd
 
-        const newContent = fileContent.slice(0, cursorStart) + '    ' + fileContent.slice(cursorEnd) // 4 spaces
+        const newContent = fileContent.slice(0, cursorStart) + '  ' + fileContent.slice(cursorEnd) // 4 spaces
 
         setFileContent(newContent)
 
         // Set the cursor position to right after the inserted spaces
         requestAnimationFrame(() => {
-          textarea.selectionStart = textarea.selectionEnd = cursorStart + 4
+          textarea.selectionStart = textarea.selectionEnd = cursorStart + 2
         })
       }
     }
@@ -107,6 +107,7 @@ function Editor({ File, onSaveFile }: EditorProps): JSX.Element {
               onChange={handleContentChange}
               onKeyDown={handleTabPress}
               className="editor-textarea"
+              spellCheck="false"
             />
           </div>
         </div>

@@ -10,7 +10,11 @@ I am currently writing this in my text editor!
 - Reflect changes made in other editors (constantly refresh file content on machine?)
 - Terminal integration
 - Shortcuts:
-    - CTRL+F
-    - CTRL+L
-    - CTRL+S
+  - CTRL+F
+  - CTRL+L
+  - CTRL+S
 - LSP 
+- Custom scrollbars
+- Right click functionality
+- Git integration (expert level difficulty) 
+- Tab still acting up sometimes

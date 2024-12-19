@@ -1,9 +1,9 @@
 import React from 'react'
 import '../../assets/css/navbar.css'
-import { Directory, File } from "../../types/Directory.d"
+import { Directory, _File } from '../../types/Directory.d'
 
 interface NavbarProps {
-  onSelectFile: (file: File) => void
+  onSelectFile: (file: _File) => void
   onSelectFolder: (folder: Directory) => void
 }
 
@@ -11,7 +11,7 @@ function Navbar({ onSelectFile, onSelectFolder }: NavbarProps): JSX.Element {
   const openFileDialog = () => {
     const input = document.createElement('input')
     input.type = 'file'
-    input.accept = '*' 
+    input.accept = '*'
 
     input.onchange = (event) => {
       const target = event.target as HTMLInputElement
@@ -23,7 +23,7 @@ function Navbar({ onSelectFile, onSelectFolder }: NavbarProps): JSX.Element {
         reader.onload = () => {
           const fileContent = reader.result as string
 
-          const fileWithContent: File = {
+          const fileWithContent: _File = {
             name: selectedFile.name,
             path: selectedFile.path,
             fileSizeBytes: selectedFile.size,
@@ -37,12 +37,21 @@ function Navbar({ onSelectFile, onSelectFolder }: NavbarProps): JSX.Element {
           console.error('Error reading file')
         }
 
-        reader.readAsText(selectedFile) 
+        reader.readAsText(selectedFile)
       }
     }
 
     input.click()
   }
+
+  const excludedGitFilesRegex = /^(HEAD|config|description|packed-refs|ORIG_HEAD|COMMIT_EDITMSG)$/
+  const excludeExtensionPatterns = /\.sample$/ // Exclude .sample files
+  const excludeFolderPatterns = /(^|\/)(\.git|\.vscode)(\/|$)/ // Exclude .git and .vscode folders
+
+  // Combine all patterns into a single regex
+  const excludedFilesRegex = new RegExp(
+    `(${excludedGitFilesRegex.source})|(${excludeExtensionPatterns.source})|(${excludeFolderPatterns.source})`
+  )
 
   const openFolderDialog = async () => {
     const input = document.createElement('input')
@@ -60,7 +69,7 @@ function Navbar({ onSelectFile, onSelectFolder }: NavbarProps): JSX.Element {
           path: rootPath,
           name: rootPath,
           files: [],
-          folders: [],
+          folders: []
         }
 
         Array.from(selectedFolder).forEach((file) => {
@@ -68,27 +77,46 @@ function Navbar({ onSelectFile, onSelectFolder }: NavbarProps): JSX.Element {
           const folderPath = parts.slice(0, -1).join('/')
           const fileName = parts[parts.length - 1]
 
-          const fileObject: File = {
+          // Check if file or folder should be excluded
+          if (excludedFilesRegex.test(file.webkitRelativePath)) return // Exclude based on full path
+
+          const fileObject: _File = {
             path: folderPath + '/' + fileName,
             name: fileName,
             fileSizeBytes: file.size,
-            content: '',
+            content: '' // Assuming you will load file content later
           }
 
-          const folderPathExists = rootDirectory.folders.find(
-            (folder) => folder.path === folderPath
-          )
+          // Helper function to find or create folders recursively
+          const addFileToFolder = (folder: Directory, pathParts: string[], file: _File) => {
+            const [currentFolderName, ...remainingPath] = pathParts
 
-          if (folderPathExists) {
-            folderPathExists.files.push(fileObject)
-          } else {
-            rootDirectory.folders.push({
-              path: folderPath,
-              name: folderPath.split('/').pop() ?? '',
-              files: [fileObject],
-              folders: [],
-            })
+            // If there's no more path to follow, this is where we should add the file
+            if (remainingPath.length === 0) {
+              folder.files.push(file)
+              return
+            }
+
+            // Check if the folder exists
+            let subFolder = folder.folders.find((sub) => sub.name === currentFolderName)
+
+            // If the subfolder doesn't exist, create it
+            if (!subFolder) {
+              subFolder = {
+                path: folder.path + '/' + currentFolderName,
+                name: currentFolderName,
+                files: [],
+                folders: []
+              }
+              folder.folders.push(subFolder)
+            }
+
+            // Recurse into the subfolder
+            addFileToFolder(subFolder, remainingPath, file)
           }
+
+          // Start adding files starting from the root folder
+          addFileToFolder(rootDirectory, folderPath.split('/'), fileObject)
         })
 
         onSelectFolder(rootDirectory)
