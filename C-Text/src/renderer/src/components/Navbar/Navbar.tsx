@@ -147,9 +147,6 @@ function Navbar({ onSelectFile, onSelectFolder }: NavbarProps): JSX.Element {
         <div className="navbar-option">
           <p>View</p>
         </div>
-        <div className="navbar-option">
-          <p>Terminal</p>
-        </div>
       </div>
     </div>
   )
