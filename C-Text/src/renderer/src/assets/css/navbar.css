@@ -1,10 +1,7 @@
 .navbar-main {
   display: flex;
-
   width: 100vw;
-  height: 4vh;
-
-  /* background-color: rgb(40, 40, 40); */
+  height: 5vh;
 }
 
 .navbar-options {
@@ -12,10 +9,7 @@
   justify-content: center;
   align-items: center;
   gap: 3%;
-
   width: 30%;
-
-  /* background-color: greenyellow; */
 }
 
 .navbar-option {
@@ -33,7 +27,7 @@
 .navbar-option:hover {
   font-size: 0.95em;
   background-color: rgba(255, 255, 255, 0.3); /* Opaque white background with 30% opacity */
-  color: white; /* Keep the text color white */
+  color: white;
 }
 
 .dropdown {
@@ -56,4 +50,68 @@
 
 .dropdown-item:hover {
   background-color: #555;
+}
+
+.right-navbar {
+  width: 70%;
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: space-between; /* Allow space for other elements like search bar and settings icon */
+}
+
+.settings-icon-navbar-container {
+  height: 80%;
+  width: 4%; 
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 1%;
+  cursor: pointer;
+}
+
+#settings-icon-navbar {
+  max-width: 100%; /* Make sure it doesn’t exceed the container width */
+  max-height: 100%; /* Ensure the icon doesn't exceed container height */
+  object-fit: contain; /* Maintains aspect ratio while filling container */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .settings-icon-navbar-container {
+    width: 8%; /* Adjust icon container size on smaller screens */
+  }
+
+  #settings-icon-navbar {
+    width: auto;
+    height: auto;
+  }
+}
+
+/* Adjustments for the search bar */
+.search-bar-container-navbar {
+  display: flex;
+  align-items: center;
+  width: 70%; 
+  height: 60%; 
+  margin-left: 6%;
+}
+
+.search-bar-container-navbar input {
+  width: 100%; /* Full width of the container */
+  height: 100%; /* Full height of the container */
+  padding: 8px 12px; /* Add padding for better spacing */
+  font-size: 16px; /* Adjust font size */
+  border: 2px solid #444; /* Subtle border */
+  border-radius: 20px; /* Rounded corners */
+  background-color: #2e2e2e; /* Dark background */
+  color: white; /* Text color */
+  transition: all 0.3s ease; /* Smooth transition for focus */
+}
+
+.search-bar-container-navbar input:focus {
+  border-color: #4e8ef7; /* Light blue border on focus */
+  background-color: #3a3a3a; /* Slightly lighter background on focus */
+  outline: none; /* Remove default focus outline */
 }

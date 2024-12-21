@@ -48,7 +48,7 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
               <img src={returnImgPath('folder')} id="folder-icon-browser" />
             )}
           </span>{' '}
-          {directory.name}
+          * {directory.name}
         </div>
 
         {expandedFolders.has(folderPath) && (
@@ -69,7 +69,7 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
                         />
                       </div>
                     }{' '}
-                    {file.name}
+                    - {file.name}
                   </span>
                 </div>
               ))}
