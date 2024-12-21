@@ -56,7 +56,10 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
             {directory.files &&
               directory.files.map((file) => (
                 <div key={file.key} style={{ marginBottom: '2%' }}>
-                  <span style={{ cursor: 'pointer', display: 'flex' }} onClick={() => handleSelectFile(file.key)}>
+                  <span
+                    style={{ cursor: 'pointer', display: 'flex' }}
+                    onClick={() => handleSelectFile(file.key)}
+                  >
                     {
                       <div className="file-type-icon-browser-container">
                         <img
@@ -122,7 +125,7 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
       {repo ? (
         <div className="dir-chosen-browser-container">
           <div className="repo-name-browser-container">
-            <p>Browsing repository: {repo.name}</p>
+            <p>Workspace: {repo.name}</p>
           </div>
           <div className="dir-contents-container">{renderDirectory(repo, 0)}</div>
         </div>

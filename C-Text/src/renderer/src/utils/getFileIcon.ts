@@ -53,9 +53,9 @@ const returnImgPath = (extension: string) => {
     // Image files
     case "jpg":
     case "jpeg":
-      return "../../src/assets/images/jpg-icon.png";
+      return "../../src/assets/images/jpg-icon.webp";
     case "png":
-      return "../../src/assets/images/png-icon.png";
+      return "../../src/assets/images/png-icon.webp";
     case "gif":
       return "../../src/assets/images/gif-icon.png";
     case "bmp":
@@ -65,13 +65,13 @@ const returnImgPath = (extension: string) => {
 
     // Audio files
     case "mp3":
-      return "../../src/assets/images/mp3-icon.png";
+      return "../../src/assets/images/auio-icon.webp";
     case "wav":
-      return "../../src/assets/images/wav-icon.png";
+      return "../../src/assets/images/audio-icon.webp";
     case "ogg":
-      return "../../src/assets/images/ogg-icon.png";
+      return "../../src/assets/images/audio-icon.webp";
     case "aac":
-      return "../../src/assets/images/aac-icon.png";
+      return "../../src/assets/images/audio-icon.webp";
 
     // Video files
     case "mp4":
@@ -85,7 +85,7 @@ const returnImgPath = (extension: string) => {
 
     // Document files
     case "pdf":
-      return "../../src/assets/images/pdf-icon.png";
+      return "../../src/assets/images/pdf-icon.webp";
     case "doc":
     case "docx":
       return "../../src/assets/images/doc-icon.png";
