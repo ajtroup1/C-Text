@@ -3,13 +3,74 @@ import { electronAPI } from '@electron-toolkit/preload';
 import * as fs from 'node:fs/promises';
 import * as path from 'path';
 import { FileInfo, Folder, Directory } from '../renderer/src/types/Directory.d';
+import { AppSettings } from '../renderer/src/types/Settings.d';
+import * as os from 'os'
 
 const childProcess = require('child_process');
 
 const excludePattern = /(^\.|\.git|\.vscode|node_modules|\.idea)/i;
 
+const settingsDir = path.join(path.resolve(__dirname, '../../..'), 'config')
+console.log(settingsDir)
+
+const ensureSettingsDirectoryExists = async () => {
+  try {
+    await fs.mkdir(settingsDir, { recursive: true }); 
+  } catch (error) {
+    console.error('Error creating settings directory:', error);
+    throw error;
+  }
+};
+
+const defaultSettings: AppSettings = {
+  file: {
+    autosave: true
+  },
+  appearance: {
+    theme: 'dark',
+    fontSize: 'medium'
+  },
+  editor: {
+    cursorType: 'line',
+    highlightCurrentLine: true,
+    showLineNumbers: true
+  },
+  defaultWorkspace: {
+    defaultWorkspacePath: path.join(os.homedir(), 'C-Text Projects')
+  },
+  formatting: {
+    formatOnSave: true,
+    tabSize: 4,
+    indentation: 'tabs',
+    quoteType: 'double'
+  }
+}
+
+interface NodeError extends Error {
+  code?: string; // Make `code` optional (it might not always be present)
+}
+
 // Custom APIs for renderer
 const customAPI = {
+  getOrCreateSettings: async (): Promise<typeof defaultSettings> => {
+    try {
+      // Try to read the settings file
+      await ensureSettingsDirectoryExists()
+      const settingsFile = await fs.readFile(path.join(settingsDir, 'settings.json'), 'utf-8');
+      console.log(JSON.parse(settingsFile))
+      return JSON.parse(settingsFile); // Parse and return the settings
+    } catch (error: unknown) {
+      // If the error is an instance of NodeError, check for code
+      if (error instanceof Error && (error as NodeError).code === 'ENOENT') {
+        // File doesn't exist, create it with default settings
+        await fs.writeFile(path.join(settingsDir, 'settings.json'), JSON.stringify(defaultSettings, null, 2));
+        console.log(defaultSettings)
+        return defaultSettings; // Return the default settings
+      }
+      // Handle other potential errors (like JSON parsing errors)
+      throw new Error('Failed to read or parse settings file: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    }
+  },
   openTerminal: async (workspacePath: string) => {
     try {
       const quotedPath = `"${workspacePath}"`;

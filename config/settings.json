@@ -1,0 +1,23 @@
+{
+  "file": {
+    "autosave": true
+  },
+  "appearance": {
+    "theme": "dark",
+    "fontSize": "medium"
+  },
+  "editor": {
+    "cursorType": "line",
+    "highlightCurrentLine": true,
+    "showLineNumbers": true
+  },
+  "defaultWorkspace": {
+    "defaultWorkspacePath": "C:\\Users\\epicn\\C-Text Projects"
+  },
+  "formatting": {
+    "formatOnSave": true,
+    "tabSize": 2,
+    "indentation": "tabs",
+    "quoteType": "double"
+  }
+}
