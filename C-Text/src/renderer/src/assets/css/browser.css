@@ -63,6 +63,8 @@
   height: 94%;
   padding: 3%;
   overflow: auto;
+  max-height: 87.5%;
+  padding-bottom: 15%;
 }
 
 #folder-icon-browser {
