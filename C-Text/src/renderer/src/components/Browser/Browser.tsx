@@ -2,6 +2,7 @@ import { Directory, _File, FileInfo, Folder } from '@renderer/types/Directory.d'
 import '../../assets/css/browser.css'
 import { useState, useEffect } from 'react'
 import returnImgPath from '@renderer/utils/getFileIcon'
+import getFileExtension from '@renderer/utils/getFileExtension'
 
 interface BrowserProps {
   Workspace: Directory | null
@@ -63,7 +64,7 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
                     {
                       <div className="file-type-icon-browser-container">
                         <img
-                          src={returnImgPath(getFileExtension(file.name))}
+                          src={file.name.toLowerCase() === 'makefile' ? returnImgPath('makefile') : returnImgPath(getFileExtension(file.name))}
                           id="file-type-icon-browser"
                         />
                       </div>
@@ -80,11 +81,6 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
         )}
       </div>
     )
-  }
-
-  function getFileExtension(fileName: string): string {
-    const parts = fileName.split('.')
-    return parts.length > 1 ? parts.pop()! : ''
   }
 
   const handleSelectFile = async (fileKey: string) => {
