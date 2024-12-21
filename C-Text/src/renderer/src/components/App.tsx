@@ -6,7 +6,7 @@ import { Directory, _File, FileInfo } from '@renderer/types/Directory.d'
 import { useResizer } from '../hooks/useResizer'
 
 function App(): JSX.Element {
-  const [debugging, setDebugging] = useState<boolean>(true)
+  const [debugging, setDebugging] = useState<boolean>(false)
   const [workspace, setWorkspace] = useState<Directory | null>(null)
   const [activeFile, setActiveFile] = useState<_File | null>(null)
 
@@ -47,9 +47,17 @@ function App(): JSX.Element {
     setActiveFile(file)
   }
 
+  const openTerminal = () => {
+    if (workspace) {
+      (window as any).electron.openTerminal(workspace.path)
+    } else {
+      (window as any).electron.openTerminal('DEFAULT')
+    }
+  }
+
   return (
     <div className="main">
-      <Navbar onSelectFile={handleFileSelect} onSelectFolder={handleFolderSelect} />
+      <Navbar onSelectFile={handleFileSelect} onSelectFolder={handleFolderSelect} openTerminal={openTerminal}/>
       <div className="lower-main" ref={lowerMainRef}>
         <div className="browser-container" ref={browserRef}>
           <Browser Workspace={workspace} selectFile={handleBrowserFileSelect}/>

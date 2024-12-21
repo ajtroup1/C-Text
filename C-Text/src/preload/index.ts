@@ -1,22 +1,33 @@
 import { contextBridge } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
-import * as fs from 'node:fs/promises'; // Use fs.promises for async/await
+import * as fs from 'node:fs/promises';
 import * as path from 'path';
 import { FileInfo, Folder, Directory } from '../renderer/src/types/Directory.d';
+
+const childProcess = require('child_process')
 
 const excludePattern = /(^\.|\.git|\.vscode|node_modules|\.idea)/i;
 
 // Custom APIs for renderer
 const customAPI = {
-  saveFile: async (filePath: string, content: string) => {
-    try {
-      await fs.writeFile(filePath, content, 'utf-8');
-      console.log(`File saved successfully: ${filePath}`);
-    } catch (error) {
-      console.error('Error saving file:', error);
-      throw error;
-    }
-  },
+  openTerminal: async (workspacePath: string) => {
+  try {
+    const quotedPath = `"${workspacePath}"`;
+
+    const child = childProcess.spawn('cmd.exe', ['/c', 'start', 'cmd.exe', '/k', `cd /d ${quotedPath}`], {
+      detached: true, 
+      shell: true, 
+    });
+
+    child.on('error', (err) => {
+      console.error('Failed to start process:', err);
+    });
+
+    child.unref(); 
+  } catch (error) {
+    console.error('Error:', error);
+  }
+},
 
   getFile: async (filePath: string): Promise<_File> => {
     try {
@@ -50,8 +61,7 @@ const customAPI = {
 
  readDirectory: async (dirPath: string): Promise<Directory> => {
     try {
-      console.log("backend", dirPath); // Log to ensure correct path is passed
-      const folderContents = await fs.readdir(dirPath);  // Read the directory
+      const folderContents = await fs.readdir(dirPath);  
 
       const dir: Directory = {
         path: dirPath,
@@ -61,16 +71,14 @@ const customAPI = {
       };
 
       for (const file of folderContents) {
-        // Skip files or folders that match the exclusion pattern
         if (excludePattern.test(file)) {
-          continue; // Skip the file/folder
+          continue; 
         }
 
         const fullPath = path.join(dirPath, file);
-        const stat = await fs.stat(fullPath); // Check if it's a file or directory
+        const stat = await fs.stat(fullPath); 
 
         if (stat.isDirectory()) {
-          // Recursive call for directories
           const folder: Folder = {
             name: file,
             path: fullPath,
@@ -78,17 +86,14 @@ const customAPI = {
             files: []
           };
 
-          // Avoid infinite recursion by checking if folder already exists in the entire folder structure
           const existingFolder = customAPI.findFolderByPath(dir, fullPath);
           if (!existingFolder) {
-            // Recursive call to get subfolders and files
             const subDir = await customAPI.readDirectory(fullPath);
-            folder.folders = subDir.folders; // Add subfolders
-            folder.files = subDir.files;     // Add files in the directory
-            dir.folders.push(folder);        // Add the folder to the root directory's folders
+            folder.folders = subDir.folders; 
+            folder.files = subDir.files;  
+            dir.folders.push(folder);  
           }
         } else {
-          // Handle files
           const folderPath = fullPath.split('\\').slice(0, -1).join('\\');
           const fileObj: FileInfo = {
             name: file,
@@ -97,12 +102,10 @@ const customAPI = {
             key: `${fullPath}-${Date.now()}`
           };
 
-          // Find the corresponding folder in the folder tree
           const folder = customAPI.findFolderByPath(dir, folderPath);
           if (folder) {
-            folder.files.push(fileObj);  // Add the file to the correct folder
+            folder.files.push(fileObj);
           } else {
-            // If folder doesn't exist yet, create it and add the file
             dir.folders.push({
               name: path.basename(folderPath),
               path: folderPath,
@@ -121,19 +124,15 @@ const customAPI = {
   },
  
 
-  // Helper function to recursively find a folder by path
   findFolderByPath: (dir: Directory, folderPath: string): Folder | undefined => {
-    // First check the root folder itself
     if (dir.path === folderPath) {
       return dir;
     }
 
-    // Then, recursively check each subfolder
     for (const folder of dir.folders) {
       if (folder.path === folderPath) {
         return folder;
       } else {
-        // Recursively search inside subfolders
         const foundFolder = customAPI.findFolderByPath(folder, folderPath);
         if (foundFolder) {
           return foundFolder;
@@ -141,7 +140,6 @@ const customAPI = {
       }
     }
 
-    // If no folder found, return undefined
     return undefined;
   }
 };

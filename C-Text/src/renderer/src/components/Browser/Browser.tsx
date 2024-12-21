@@ -88,8 +88,6 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
   }
 
   const handleSelectFile = async (fileKey: string) => {
-    console.log('key: ', fileKey)
-
     const findFileRecursive = (directory: Directory): FileInfo | undefined => {
       const file = directory.files.find((file) => file.key === fileKey)
       if (file) return file
