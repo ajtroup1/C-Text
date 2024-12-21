@@ -94,8 +94,16 @@ function Navbar({ onSelectFile, onSelectFolder, openTerminal }: NavbarProps): JS
         <div className="navbar-option">
           <p>View</p>
         </div>
-        <div className="navbar-option" onClick={openTerminal}>
+        <div className="navbar-option" onClick={handleOpenTerminal}>
           <p>Terminal</p>
+        </div>
+      </div>
+      <div className='right-navbar'>
+        <div className='search-bar-container-navbar'>
+          <input type="text"/>
+        </div>
+        <div className='settings-icon-navbar-container'>
+          <img src='../../src/assets/images/settings-icon.png' id='settings-icon-navbar'/>
         </div>
       </div>
     </div>
