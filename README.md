@@ -32,6 +32,5 @@ I am currently writing this in my text editor!
 - HTML page renderer
 - Drag and drop support
   - Drag a file into another folder
-  - Drage something from external apps and put it into the editor's browser
+  - Drag something from external apps and put it into the editor's browser
 - Terminal integration
-- File icons (C, Rust, JS, TS, etc...)

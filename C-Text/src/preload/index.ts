@@ -4,30 +4,30 @@ import * as fs from 'node:fs/promises';
 import * as path from 'path';
 import { FileInfo, Folder, Directory } from '../renderer/src/types/Directory.d';
 
-const childProcess = require('child_process')
+const childProcess = require('child_process');
 
 const excludePattern = /(^\.|\.git|\.vscode|node_modules|\.idea)/i;
 
 // Custom APIs for renderer
 const customAPI = {
   openTerminal: async (workspacePath: string) => {
-  try {
-    const quotedPath = `"${workspacePath}"`;
+    try {
+      const quotedPath = `"${workspacePath}"`;
 
-    const child = childProcess.spawn('cmd.exe', ['/c', 'start', 'cmd.exe', '/k', `cd /d ${quotedPath}`], {
-      detached: true, 
-      shell: true, 
-    });
+      const child = childProcess.spawn('cmd.exe', ['/c', 'start', 'cmd.exe', '/k', `cd /d ${quotedPath}`], {
+        detached: true, 
+        shell: true, 
+      });
 
-    child.on('error', (err) => {
-      console.error('Failed to start process:', err);
-    });
+      child.on('error', (err) => {
+        console.error('Failed to start process:', err);
+      });
 
-    child.unref(); 
-  } catch (error) {
-    console.error('Error:', error);
-  }
-},
+      child.unref(); 
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  },
 
   getFile: async (filePath: string): Promise<_File> => {
     try {
@@ -58,8 +58,17 @@ const customAPI = {
     }
   },
 
+  saveFile: async (filePath: string, content: string) => {
+    try {
+      await fs.writeFile(filePath, content, 'utf-8');
+      console.log(`File saved successfully: ${filePath}`);
+    } catch (error) {
+      console.error('Error saving file:', error);
+      throw error;
+    }
+  },
 
- readDirectory: async (dirPath: string): Promise<Directory> => {
+  readDirectory: async (dirPath: string): Promise<Directory> => {
     try {
       const folderContents = await fs.readdir(dirPath);  
 
@@ -122,7 +131,6 @@ const customAPI = {
       throw err;
     }
   },
- 
 
   findFolderByPath: (dir: Directory, folderPath: string): Folder | undefined => {
     if (dir.path === folderPath) {
