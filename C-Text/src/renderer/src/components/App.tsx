@@ -1,14 +1,21 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Navbar from './Navbar/Navbar'
 import Browser from './Browser/Browser'
 import Editor from './Editor/Editor'
 import { Directory, _File, FileInfo } from '@renderer/types/Directory.d'
 import { useResizer } from '../hooks/useResizer'
+import { AppSettings } from '@renderer/types/Settings.d'
 
 function App(): JSX.Element {
+  const [settings, setSettings] = useState<AppSettings | null>(null)
   const [debugging, setDebugging] = useState<boolean>(false)
   const [workspace, setWorkspace] = useState<Directory | null>(null)
   const [activeFile, setActiveFile] = useState<_File | null>(null)
+
+  useEffect(() => {
+    const settings = (window as any).electron.getOrCreateSettings()
+    console.log('RECEIVED SETTINGS', settings)
+  }, [])
 
   // --------------------------------------------------------
   // RESIZING FOR EDITOR / BROSWER WIDTH
