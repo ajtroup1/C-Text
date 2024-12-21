@@ -4,6 +4,12 @@ I am currently writing this in my text editor!
 
 # TODO
 
+- ICONS, ICONS, ICONS!
+- *** Watch a video on IPC handlers and main / preload processes
+  - I understand now
+- *** Is it actually giving me the correct folder structure and information?
+- Loading icon
+  - Especially when loading a workspace
 - Line numbers
 - Settings:
   - Themes
@@ -28,3 +34,4 @@ I am currently writing this in my text editor!
   - Drag a file into another folder
   - Drage something from external apps and put it into the editor's browser
 - Terminal integration
+- File icons (C, Rust, JS, TS, etc...)

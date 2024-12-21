@@ -1,6 +1,7 @@
-import { Directory, _File, FileInfo } from '@renderer/types/Directory.d'
+import { Directory, _File, FileInfo, Folder } from '@renderer/types/Directory.d'
 import '../../assets/css/browser.css'
 import { useState, useEffect } from 'react'
+import returnImgPath from '@renderer/utils/getFileIcon'
 
 interface BrowserProps {
   Workspace: Directory | null
@@ -12,16 +13,18 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set())
 
   useEffect(() => {
-    setRepo(Workspace)
+    if (Workspace) {
+      setRepo(Workspace)
+    }
   }, [Workspace])
 
   const toggleFolder = (folderPath: string) => {
     setExpandedFolders((prevExpanded) => {
       const newExpanded = new Set(prevExpanded)
       if (newExpanded.has(folderPath)) {
-        newExpanded.delete(folderPath) // Collapse the folder
+        newExpanded.delete(folderPath)
       } else {
-        newExpanded.add(folderPath) // Expand the folder
+        newExpanded.add(folderPath)
       }
       return newExpanded
     })
@@ -29,25 +32,40 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
 
   const renderDirectory = (directory: Directory, level: number) => {
     const folderPath = directory.path
+    const folderName = directory.name // TODO: handle special folder type images
 
     return (
       <div key={folderPath}>
         <div
-          style={{ paddingLeft: `${level * 10}px`, cursor: 'pointer' }}
+          style={{ paddingLeft: `${level * 10}px`, cursor: 'pointer', marginBottom: '2%' }}
           onClick={() => toggleFolder(folderPath)}
         >
-          <span>{expandedFolders.has(folderPath) ? '[-]' : '[+]'}</span> {directory.name}
+          <span style={{ paddingRight: '0.7%' }}>
+            {expandedFolders.has(folderPath) ? (
+              <img src={returnImgPath('collapse-ctext')} id="collapse-img-browser" />
+            ) : (
+              <img src={returnImgPath('folder')} id="folder-icon-browser" />
+            )}
+          </span>{' '}
+          {directory.name}
         </div>
 
-        {/* Only load files and subfolders if the folder is expanded */}
         {expandedFolders.has(folderPath) && (
           <div style={{ paddingLeft: `${(level + 1) * 10}px` }}>
             {/* Render files */}
             {directory.files &&
               directory.files.map((file) => (
-                <div key={file.key} style={{ marginBottom: '5px' }}>
-                  <span style={{ cursor: 'pointer' }} onClick={() => handleSelectFile(file.key)}>
-                    - {file.name}
+                <div key={file.key} style={{ marginBottom: '2%' }}>
+                  <span style={{ cursor: 'pointer', display: 'flex' }} onClick={() => handleSelectFile(file.key)}>
+                    {
+                      <div className="file-type-icon-browser-container">
+                        <img
+                          src={returnImgPath(getFileExtension(file.name))}
+                          id="file-type-icon-browser"
+                        />
+                      </div>
+                    }{' '}
+                    {file.name}
                   </span>
                 </div>
               ))}
@@ -61,25 +79,26 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
     )
   }
 
+  function getFileExtension(fileName: string): string {
+    const parts = fileName.split('.')
+    return parts.length > 1 ? parts.pop()! : ''
+  }
+
   const handleSelectFile = async (fileKey: string) => {
     console.log('key: ', fileKey)
 
-    // Recursive function to search for a file in the directory structure
     const findFileRecursive = (directory: Directory): FileInfo | undefined => {
-      // Search in the current folder's files
       const file = directory.files.find((file) => file.key === fileKey)
       if (file) return file
 
-      // Search recursively in all subfolders
       for (const folder of directory.folders) {
         const result = findFileRecursive(folder)
-        if (result) return result // Return as soon as we find the file
+        if (result) return result
       }
 
-      return undefined // Return undefined if file is not found
+      return undefined
     }
 
-    // Search for the file starting from the root directory
     const selectedFile = repo ? findFileRecursive(repo) : undefined
 
     const binaryFileExtensions =

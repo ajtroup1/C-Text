@@ -1,8 +1,7 @@
-export interface Directory {
-  path: string // The path of the directory
-  name: string // The name of the directory
-  files: FileInfo[] // The files directly inside this directory
-  folders: Folder[] // Folders (which themselves contain files and/or other folders)
+// TODO: Have directory extend folder and contain additional metadata
+
+export interface Directory extends Folder {
+  //
 }
 
 export interface Folder {
@@ -18,6 +17,7 @@ export interface _File extends File {
 
 export interface FileInfo {
   path: string
+  folderPath: string
   name: string
   relativePath?: string
   key: string

@@ -1,6 +1,6 @@
 import React from 'react'
 import '../../assets/css/navbar.css'
-import { Directory, _File, FileInfo } from '../../types/Directory.d'
+import { Directory, _File, FileInfo, Folder } from '../../types/Directory.d'
 import { v4 as uuidv4 } from 'uuid'
 
 interface NavbarProps {
@@ -48,10 +48,6 @@ function Navbar({ onSelectFile, onSelectFolder }: NavbarProps): JSX.Element {
   const excludeFolderPatterns = /(^|\/)(\.git|\.vscode)(\/|$)/ // Exclude .git and .vscode folders
 
   // Combine all patterns into a single regex
-  const excludedFilesRegex = new RegExp(
-    `(${excludedGitFilesRegex.source})|(${excludeExtensionPatterns.source})|(${excludeFolderPatterns.source})`
-  )
-
   const openFolderDialog = async () => {
     const input = document.createElement('input')
     input.type = 'file'
@@ -63,64 +59,16 @@ function Navbar({ onSelectFile, onSelectFolder }: NavbarProps): JSX.Element {
       const selectedFolder = target?.files
 
       if (selectedFolder) {
-        const rootPath = selectedFolder[0].webkitRelativePath.split('/')[0]
-        const rootDirectory: Directory = {
-          path: rootPath,
-          name: rootPath,
-          files: [],
-          folders: []
+        const path = selectedFolder[0].path.split('\\').slice(0, -1).join('\\')
+        console.log(path)
+
+        try {
+          const dir = await (window as any).electron.readDirectory(path)
+          console.log(dir)
+          onSelectFolder(dir)
+        } catch (error) {
+          console.error('Error reading directory:', error)
         }
-
-        let c = 0
-        Array.from(selectedFolder).forEach((file) => {
-          const parts = file.webkitRelativePath.split('/')
-          const folderPath = parts.slice(0, -1).join('/')
-          const fileName = parts[parts.length - 1]
-
-          // Check if file or folder should be excluded
-          if (excludedFilesRegex.test(file.webkitRelativePath)) return // Exclude based on full path
-
-          const fileObject: FileInfo = {
-            path: selectedFolder[c].path,
-            name: fileName,
-            relativePath: folderPath + '/' + fileName,
-            key: uuidv4()
-          }
-
-          // Helper function to find or create folders recursively
-          const addFileToFolder = (folder: Directory, pathParts: string[], file: FileInfo) => {
-            const [currentFolderName, ...remainingPath] = pathParts
-
-            // If there's no more path to follow, this is where we should add the file
-            if (remainingPath.length === 0) {
-              folder.files.push(file)
-              return
-            }
-
-            // Check if the folder exists
-            let subFolder = folder.folders.find((sub) => sub.name === currentFolderName)
-
-            // If the subfolder doesn't exist, create it
-            if (!subFolder) {
-              subFolder = {
-                path: selectedFolder[c].path + '/' + currentFolderName,
-                name: currentFolderName,
-                files: [],
-                folders: []
-              }
-              folder.folders.push(subFolder)
-            }
-
-            // Recurse into the subfolder
-            addFileToFolder(subFolder, remainingPath, file)
-          }
-
-          // Start adding files starting from the root folder
-          addFileToFolder(rootDirectory, folderPath.split('/'), fileObject)
-          c++
-        })
-
-        onSelectFolder(rootDirectory)
       }
     }
 
@@ -146,6 +94,9 @@ function Navbar({ onSelectFile, onSelectFolder }: NavbarProps): JSX.Element {
         </div>
         <div className="navbar-option">
           <p>View</p>
+        </div>
+        <div className="navbar-option">
+          <p>Tools</p>
         </div>
       </div>
     </div>
