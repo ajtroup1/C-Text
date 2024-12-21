@@ -3,6 +3,8 @@ const returnImgPath = (extension: string) => {
     // Special cases
     case "collapse-ctext":
       return "../src/assets/images/collapse.png";
+    case "makefile":
+      return "../src/assets/images/makefile-icon.png"
 
     // Folder types
     case "folder":
@@ -42,6 +44,8 @@ const returnImgPath = (extension: string) => {
     case "php":
       return "../../src/assets/images/php-icon.png"; // PHP
     case "go":
+    case "mod":
+    case "sum":
       return "../../src/assets/images/go-icon.png"; // Go
     case "rb":
       return "../../src/assets/images/ruby-icon.png"; // Ruby

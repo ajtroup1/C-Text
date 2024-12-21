@@ -1,6 +1,9 @@
 import { useEffect, useState, useRef } from 'react'
 import '../../assets/css/editor.css'
 import { _File } from '../../types/Directory.d'
+import MonacoEditor from './MonacoEditor'
+import getLanguageString from '@renderer/utils/getLanguageString'
+import getFileExtension from '@renderer/utils/getFileExtension'
 
 interface EditorProps {
   File: _File | null
@@ -20,76 +23,33 @@ function Editor({ File, onSaveFile }: EditorProps): JSX.Element {
 
   // Handle hanges FROM editor TO the parent component
   useEffect(() => {
-    if (File && !activeFile) {
-      setActiveFile(File)
+    if (File && File !== activeFile) {
+      setActiveFile(File) // Only update if it's a different file
       setFileContent(File.content)
       fileContentRef.current = File.content
     }
-  }, [File, activeFile])
+  }, [File]) // Only update when the 'File' prop changes
 
-  // Handle changes FROM the parent component TO the editor
-  useEffect(() => {
-    if (File) {
-      setFileContent(File.content)
-      setActiveFile(File)
-    }
-  }, [File])
-
-  const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newContent = event.target.value
+  const handleContentChange = (newContent: string) => {
     setFileContent(newContent)
     fileContentRef.current = newContent
 
+    // Debouncing the save to prevent excessive calls
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current)
     }
-    if (bufferTimeoutRef.current) {
-      clearTimeout(bufferTimeoutRef.current)
-    }
 
     typingTimeoutRef.current = setTimeout(() => {
-      bufferTimeoutRef.current = setTimeout(() => {
-        handleSave()
-      }, 250)
-    }, 1000)
+      handleSave()
+    }, 1000) // Save after 1 second of no typing
   }
 
   const handleSave = () => {
     if (activeFile && fileContentRef.current !== activeFile.content) {
       const updatedFile = { ...activeFile, content: fileContentRef.current }
-      onSaveFile(updatedFile)
+      onSaveFile(updatedFile) // Trigger the parent save handler
     }
   }
-
-  // Handle Tab key press to insert spaces
-  const handleTabPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Tab') {
-      event.preventDefault() // Prevent default tab behavior
-
-      const textarea = textareaRef.current
-      if (textarea) {
-        const cursorStart = textarea.selectionStart
-        const cursorEnd = textarea.selectionEnd
-
-        const newContent = fileContent.slice(0, cursorStart) + '  ' + fileContent.slice(cursorEnd) // 4 spaces
-
-        setFileContent(newContent)
-
-        // Set the cursor position to right after the inserted spaces
-        requestAnimationFrame(() => {
-          textarea.selectionStart = textarea.selectionEnd = cursorStart + 2
-        })
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      // Ensure that cursor remains after content changes
-      const cursorPosition = textareaRef.current.selectionStart
-      textareaRef.current.selectionStart = textareaRef.current.selectionEnd = cursorPosition
-    }
-  }, [fileContent])
 
   return (
     <div className="editor-main">
@@ -101,13 +61,11 @@ function Editor({ File, onSaveFile }: EditorProps): JSX.Element {
             </p>
           </div>
           <div className="editor-main-content-container">
-            <textarea
-              ref={textareaRef}
-              value={fileContent}
+            <MonacoEditor
+              value={activeFile.content}
+              language={getLanguageString(getFileExtension(activeFile.name))}
+              filePath={activeFile.path}
               onChange={handleContentChange}
-              onKeyDown={handleTabPress}
-              className="editor-textarea"
-              spellCheck="false"
             />
           </div>
         </div>
