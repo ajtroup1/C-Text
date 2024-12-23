@@ -1,15 +1,35 @@
-import React from 'react'
+import React, { useState } from 'react'
 import '../../assets/css/navbar.css'
 import { Directory, _File, FileInfo, Folder } from '../../types/Directory.d'
-import { v4 as uuidv4 } from 'uuid'
+import Dropdown from './Dropdown'
+import { Menu, MenuItem } from '@mui/material'
 
 interface NavbarProps {
   onSelectFile: (file: _File) => void
   onSelectFolder: (folder: Directory) => void
   openTerminal: () => void
+  openSettings: () => void
 }
 
-function Navbar({ onSelectFile, onSelectFolder, openTerminal }: NavbarProps): JSX.Element {
+function Navbar({
+  onSelectFile,
+  onSelectFolder,
+  openTerminal,
+  openSettings
+}: NavbarProps): JSX.Element {
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null)
+  const [menuType, setMenuType] = useState<string | null>(null)
+
+  const handleOpenMenu = (type: string, event: React.MouseEvent<HTMLElement>) => {
+    setMenuAnchor(event.currentTarget)
+    setMenuType(type)
+  }
+
+  const handleCloseMenu = () => {
+    setMenuAnchor(null)
+    setMenuType(null)
+  }
+
   const openFileDialog = () => {
     const input = document.createElement('input')
     input.type = 'file'
@@ -42,6 +62,7 @@ function Navbar({ onSelectFile, onSelectFolder, openTerminal }: NavbarProps): JS
     }
 
     input.click()
+    handleCloseMenu()
   }
 
   // Combine all patterns into a single regex
@@ -68,42 +89,56 @@ function Navbar({ onSelectFile, onSelectFolder, openTerminal }: NavbarProps): JS
     }
 
     input.click()
+    handleCloseMenu()
   }
 
   const handleOpenTerminal = () => {
     openTerminal()
   }
 
+  const renderMenuItems = () => {
+    switch (menuType) {
+      case 'file':
+        return (
+          <>
+            {/* <MenuItem onClick={}>Save</MenuItem> */}
+            {/* <MenuItem onClick={}>Save As</MenuItem> // TODO Save As */}
+            <MenuItem onClick={openFileDialog}>Open File</MenuItem>
+            <MenuItem onClick={openFolderDialog}>Open Folder</MenuItem>
+          </>
+        )
+      case 'view':
+        return <MenuItem onClick={handleCloseMenu}>Markdown Renderer</MenuItem>
+      default:
+        return <MenuItem>No Options Implemented</MenuItem>
+    }
+  }
+
   return (
     <div className="navbar-main">
       <div className="navbar-options">
-        <div className="navbar-option">
+        <div className="navbar-option" onClick={(e) => handleOpenMenu('file', e)}>
           <p>File</p>
-          <div className="dropdown">
-            <div className="dropdown-item" onClick={openFileDialog}>
-              Open File
-            </div>
-            <div className="dropdown-item" onClick={openFolderDialog}>
-              Open Folder
-            </div>
-          </div>
         </div>
-        <div className="navbar-option">
+        <div className="navbar-option" onClick={(e) => handleOpenMenu('edit', e)}>
           <p>Edit</p>
         </div>
-        <div className="navbar-option">
+        <div className="navbar-option" onClick={(e) => handleOpenMenu('view', e)}>
           <p>View</p>
         </div>
         <div className="navbar-option" onClick={handleOpenTerminal}>
           <p>Terminal</p>
         </div>
+        <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={handleCloseMenu}>
+          {renderMenuItems()}
+        </Menu>
       </div>
-      <div className='right-navbar'>
-        <div className='search-bar-container-navbar'>
-          <input type="text"/>
+      <div className="right-navbar">
+        <div className="search-bar-container-navbar">
+          <input type="text" />
         </div>
-        <div className='settings-icon-navbar-container'>
-          <img src='../../src/assets/images/settings-icon.png' id='settings-icon-navbar'/>
+        <div className="settings-icon-navbar-container" onClick={openSettings}>
+          <img src="../../src/assets/images/settings-icon.png" id="settings-icon-navbar" />
         </div>
       </div>
     </div>

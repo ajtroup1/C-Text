@@ -3,7 +3,7 @@ import { electronAPI } from '@electron-toolkit/preload';
 import * as fs from 'node:fs/promises';
 import * as path from 'path';
 import { FileInfo, Folder, Directory } from '../renderer/src/types/Directory.d';
-import { AppSettings } from '../renderer/src/types/Settings.d';
+import { Settings } from '../renderer/src/types/Settings.d';
 import * as os from 'os'
 
 const childProcess = require('child_process');
@@ -22,26 +22,27 @@ const ensureSettingsDirectoryExists = async () => {
   }
 };
 
-const defaultSettings: AppSettings = {
+const defaultSettings: Settings = {
   file: {
     autosave: true
   },
   appearance: {
     theme: 'dark',
-    fontSize: 'medium'
+    fontSize: 12
   },
   editor: {
     cursorType: 'line',
+    fontSize: 12,
     highlightCurrentLine: true,
-    showLineNumbers: true
+    lineNumbers: true
   },
   defaultWorkspace: {
-    defaultWorkspacePath: path.join(os.homedir(), 'C-Text Projects')
+    path: path.join(os.homedir(), 'C-Text Projects')
   },
   formatting: {
     formatOnSave: true,
     tabSize: 4,
-    indentation: 'tabs',
+    unifyQuotes: false,
     quoteType: 'double'
   }
 }
