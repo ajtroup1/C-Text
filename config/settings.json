@@ -4,20 +4,21 @@
   },
   "appearance": {
     "theme": "dark",
-    "fontSize": "medium"
+    "fontSize": 12
   },
   "editor": {
     "cursorType": "line",
+    "fontSize": 12,
     "highlightCurrentLine": true,
-    "showLineNumbers": true
+    "lineNumbers": true
   },
   "defaultWorkspace": {
-    "defaultWorkspacePath": "C:\\Users\\epicn\\C-Text Projects"
+    "path": "C:\\Users\\epicn\\C-Text Projects"
   },
   "formatting": {
     "formatOnSave": true,
-    "tabSize": 2,
-    "indentation": "tabs",
+    "tabSize": 4,
+    "unifyQuotes": false,
     "quoteType": "double"
   }
 }

@@ -1,33 +1,61 @@
-export interface FileSettings {
-  autosave: boolean
+export interface Settings {
+  file: {
+    autosave: boolean
+  }
+  appearance: {
+    theme: string
+    fontSize: number
+  }
+  editor: {
+    cursorType: 'line' | 'block' | 'underline'
+    fontSize: number // EDITOR font size, not the general font size
+    highlightCurrentLine: boolean
+    lineNumbers: boolean
+  }
+  defaultWorkspace: {
+    path: string
+  }
+  formatting: {
+    formatOnSave: boolean
+    tabSize: number
+    unifyQuotes: boolean
+    quoteType: 'double' | 'single'
+  }
 }
 
-export interface AppearanceSettings {
-  theme: 'light' | 'dark'
-  fontSize: 'small' | 'medium' | 'large'
-}
+export type ToggleConfig = {
+  type: 'toggle';
+  label: string;
+  desc?: string;
+};
 
-export interface EditorSettings {
-  cursorType: 'line' | 'block' | 'underline'
-  highlightCurrentLine: boolean
-  showLineNumbers: boolean
-}
+export type DropdownConfig = {
+  type: 'dropdown';
+  label: string;
+  options: string[];
+  desc?: string;
+};
 
-export interface DefaultWorkspaceSettings {
-  defaultWorkspacePath: string
-}
+export type NumberConfig = {
+  type: 'number';
+  label: string;
+  desc?: string;
+};
 
-export interface FormattingSettings {
-  formatOnSave: boolean
-  tabSize: number
-  indentation: 'spaces' | 'tabs'
-  quoteType: 'single' | 'double'
-}
+export type InputConfig = {
+  type: 'input';
+  label: string;
+  desc?: string;
+};
 
-export interface AppSettings {
-  file: FileSettings
-  appearance: AppearanceSettings
-  editor: EditorSettings
-  defaultWorkspace: DefaultWorkspaceSettings
-  formatting: FormattingSettings
-}
+export type SettingField = 
+  | ToggleConfig
+  | DropdownConfig
+  | NumberConfig
+  | InputConfig;
+
+export type SettingsMetadata = {
+  [category: string]: {
+    [key: string]: SettingField;
+  };
+};
