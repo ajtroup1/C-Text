@@ -23,6 +23,7 @@
   min-height: 40%;
   max-height: 70%;
   color: white;
+  position: absolute;
 }
 
 .close-btn {
@@ -82,7 +83,7 @@ pre {
 /* Style the categories and their headings */
 .settings-category {
   margin-bottom: 1.5rem;
-  font-size: 1.6rem;
+  font-size: 1.3rem;
   font-weight: bold;
   color: #ffffff;  /* Darker text for headings */
 }
@@ -133,6 +134,7 @@ pre {
 .settings-item input[type="checkbox"] {
   margin-left: 1%;
   transform: scale(1.2);  /* Make the checkbox a bit larger for better visibility */
+  margin-bottom: 2.5%;
 }
 
 /* Style for the number and text input fields */
@@ -154,12 +156,11 @@ pre {
 }
 
 .settings-item input[type="number"] {
-  -moz-appearance: textfield;  /* Remove spin buttons for number inputs */
+  appearance: none;
 }
 
 .settings-item input[type="number"]::-webkit-outer-spin-button,
 .settings-item input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
   margin: 0;
 }
 
@@ -186,4 +187,27 @@ pre {
 .settings-checkbox-container {
   display: flex;
   font-size: 0.8rem;  
+}
+
+.settings-btns-container {
+  position: relative;
+  padding-bottom: 5%;
+}
+
+#accept-settings-btn,
+#decline-settings-btn {
+  font-size: 0.8rem;
+  max-height: 90%;
+  display: flex;
+  align-items: center;
+}
+
+#accept-settings-btn {
+  position: absolute;
+  right: 3%;
+}
+
+#decline-settings-btn {
+  position: absolute;
+  left: 3%;
 }

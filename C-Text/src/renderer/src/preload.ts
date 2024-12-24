@@ -6,5 +6,6 @@ contextBridge.exposeInMainWorld('electron', {
   getFile: (filePath) => ipcRenderer.invoke('dialog:getFile', filePath),
   readDirectory: (dirPath) => ipcRenderer.invoke('dialog:readDirectory', dirPath),
   openTerminal: (workspacePath) => ipcRenderer.invoke('dialog:openTerminal', workspacePath),
-  getOrCreateSettings: () => ipcRenderer.invoke('dialog:getOrCreateSettings')
+  getOrCreateSettings: () => ipcRenderer.invoke('dialog:getOrCreateSettings'),
+  saveSettings: (newSettings) => ipcRenderer.invoke('dialog:saveSettings', newSettings)
 });

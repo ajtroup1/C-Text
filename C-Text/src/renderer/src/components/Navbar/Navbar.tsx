@@ -9,13 +9,15 @@ interface NavbarProps {
   onSelectFolder: (folder: Directory) => void
   openTerminal: () => void
   openSettings: () => void
+  saveDocument: () => void
 }
 
 function Navbar({
   onSelectFile,
   onSelectFolder,
   openTerminal,
-  openSettings
+  openSettings,
+  saveDocument
 }: NavbarProps): JSX.Element {
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null)
   const [menuType, setMenuType] = useState<string | null>(null)
@@ -96,12 +98,16 @@ function Navbar({
     openTerminal()
   }
 
+  const handleSave = () => {
+    saveDocument()
+  }
+
   const renderMenuItems = () => {
     switch (menuType) {
       case 'file':
         return (
           <>
-            {/* <MenuItem onClick={}>Save</MenuItem> */}
+            <MenuItem onClick={handleSave}>Save</MenuItem>
             {/* <MenuItem onClick={}>Save As</MenuItem> // TODO Save As */}
             <MenuItem onClick={openFileDialog}>Open File</MenuItem>
             <MenuItem onClick={openFolderDialog}>Open Folder</MenuItem>

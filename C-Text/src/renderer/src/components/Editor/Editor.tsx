@@ -4,50 +4,54 @@ import { _File } from '../../types/Directory.d'
 import MonacoEditor from './MonacoEditor'
 import getLanguageString from '@renderer/utils/getLanguageString'
 import getFileExtension from '@renderer/utils/getFileExtension'
+import { Settings } from '@renderer/types/Settings.d'
 
 interface EditorProps {
   File: _File | null
+  _settings: Settings
   onSaveFile: (updatedFile: _File) => void
 }
 
-function Editor({ File, onSaveFile }: EditorProps): JSX.Element {
+function Editor({ File, _settings, onSaveFile }: EditorProps): JSX.Element {
+  const [settings, setSettings] = useState<Settings>(_settings)
   const [activeFile, setActiveFile] = useState<_File | null>(null)
   const [fileContent, setFileContent] = useState<string>('')
 
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const bufferTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
-
   const fileContentRef = useRef<string>('')
+
+  useEffect(() => {
+    setSettings(_settings)
+  }, [_settings])
 
   // Handle hanges FROM editor TO the parent component
   useEffect(() => {
     if (File && File !== activeFile) {
-      setActiveFile(File) // Only update if it's a different file
+      setActiveFile(File) 
       setFileContent(File.content)
       fileContentRef.current = File.content
     }
-  }, [File]) // Only update when the 'File' prop changes
+  }, [File])
 
   const handleContentChange = (newContent: string) => {
     setFileContent(newContent)
     fileContentRef.current = newContent
 
-    // Debouncing the save to prevent excessive calls
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current)
     }
 
     typingTimeoutRef.current = setTimeout(() => {
       handleSave()
-    }, 1000) // Save after 1 second of no typing
+    }, 1000) 
   }
 
   const handleSave = () => {
     if (activeFile && fileContentRef.current !== activeFile.content) {
       const updatedFile = { ...activeFile, content: fileContentRef.current }
-      onSaveFile(updatedFile) // Trigger the parent save handler
+      onSaveFile(updatedFile) 
     }
   }
 
@@ -65,6 +69,7 @@ function Editor({ File, onSaveFile }: EditorProps): JSX.Element {
               value={activeFile.content}
               language={getLanguageString(getFileExtension(activeFile.name))}
               filePath={activeFile.path}
+              _settings={settings}
               onChange={handleContentChange}
             />
           </div>

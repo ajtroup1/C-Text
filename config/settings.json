@@ -4,13 +4,14 @@
   },
   "appearance": {
     "theme": "dark",
-    "fontSize": 12
+    "fontSize": "medium"
   },
   "editor": {
     "cursorType": "line",
     "fontSize": 12,
     "highlightCurrentLine": true,
-    "lineNumbers": true
+    "lineNumbers": true,
+    "theme": "dark_1"
   },
   "defaultWorkspace": {
     "path": "C:\\Users\\epicn\\C-Text Projects"

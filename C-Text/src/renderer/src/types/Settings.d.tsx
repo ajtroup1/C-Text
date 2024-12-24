@@ -4,13 +4,14 @@ export interface Settings {
   }
   appearance: {
     theme: string
-    fontSize: number
+    fontSize: 'small' | 'medium' | 'large'
   }
   editor: {
     cursorType: 'line' | 'block' | 'underline'
     fontSize: number // EDITOR font size, not the general font size
     highlightCurrentLine: boolean
     lineNumbers: boolean
+    theme: 'light_1' | 'dark_1' | 'light_2' | "dark_2"
   }
   defaultWorkspace: {
     path: string

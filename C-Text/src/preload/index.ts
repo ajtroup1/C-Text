@@ -28,13 +28,14 @@ const defaultSettings: Settings = {
   },
   appearance: {
     theme: 'dark',
-    fontSize: 12
+    fontSize: 'medium'
   },
   editor: {
     cursorType: 'line',
     fontSize: 12,
     highlightCurrentLine: true,
-    lineNumbers: true
+    lineNumbers: true,
+    theme: 'dark_1'
   },
   defaultWorkspace: {
     path: path.join(os.homedir(), 'C-Text Projects')
@@ -48,28 +49,42 @@ const defaultSettings: Settings = {
 }
 
 interface NodeError extends Error {
-  code?: string; // Make `code` optional (it might not always be present)
+  code?: string;
 }
 
 // Custom APIs for renderer
 const customAPI = {
   getOrCreateSettings: async (): Promise<typeof defaultSettings> => {
     try {
-      // Try to read the settings file
       await ensureSettingsDirectoryExists()
       const settingsFile = await fs.readFile(path.join(settingsDir, 'settings.json'), 'utf-8');
-      console.log(JSON.parse(settingsFile))
-      return JSON.parse(settingsFile); // Parse and return the settings
+      return JSON.parse(settingsFile); 
     } catch (error: unknown) {
-      // If the error is an instance of NodeError, check for code
       if (error instanceof Error && (error as NodeError).code === 'ENOENT') {
-        // File doesn't exist, create it with default settings
         await fs.writeFile(path.join(settingsDir, 'settings.json'), JSON.stringify(defaultSettings, null, 2));
-        console.log(defaultSettings)
-        return defaultSettings; // Return the default settings
+        return defaultSettings; 
       }
-      // Handle other potential errors (like JSON parsing errors)
       throw new Error('Failed to read or parse settings file: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    }
+  },
+  saveSettings: async (settings: Settings) => {
+    console.log('ipc: ', settings)
+    try {
+      await ensureSettingsDirectoryExists()
+
+      const settingsFile = path.join(settingsDir, 'settings.json')
+
+      const exists = await fs.access(settingsFile).then(() => true).catch(() => false)
+
+      if (exists) {
+        await fs.writeFile(settingsFile, JSON.stringify(settings, null, 2))
+      } else {
+        await fs.writeFile(settingsFile, JSON.stringify(settings, null, 2))
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error saving settings:', error.message)
+      }
     }
   },
   openTerminal: async (workspacePath: string) => {

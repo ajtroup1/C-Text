@@ -1,18 +1,32 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import * as monaco from 'monaco-editor'
+import { Settings } from '@renderer/types/Settings.d'
 
 interface MonacoEditorProps {
   value: string
   language: string
   filePath: string // Unique identifier for the file
+  _settings: Settings
   onChange: (newContent: string) => void
 }
 
-function MonacoEditor({ value, language, filePath, onChange }: MonacoEditorProps): JSX.Element {
+function MonacoEditor({
+  value,
+  language,
+  filePath,
+  _settings,
+  onChange
+}: MonacoEditorProps): JSX.Element {
+  const [settings, setSettings] = useState<Settings>(_settings)
   const editorRef = useRef<HTMLDivElement | null>(null)
   const monacoInstance = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
   const modelRef = useRef<monaco.editor.ITextModel | null>(null)
   const fileContentRef = useRef<string>('')
+
+  useEffect(() => {
+    setSettings(_settings)
+    console.log('asda', _settings)
+  }, [_settings])
 
   useEffect(() => {
     if (editorRef.current && !monacoInstance.current) {
@@ -26,14 +40,25 @@ function MonacoEditor({ value, language, filePath, onChange }: MonacoEditorProps
 
       monacoInstance.current = monaco.editor.create(editorRef.current, {
         model,
-        theme: 'vs-dark',
-        automaticLayout: true
+        theme:
+          settings.editor.theme === 'light_1'
+            ? 'vs'
+            : settings.editor.theme === 'light_2'
+              ? 'hc-light'
+              : settings.editor.theme === 'dark_1'
+                ? 'vs-dark'
+                : 'hc-dark',
+        automaticLayout: true,
+        fontSize: settings.editor.fontSize,
+        cursorStyle: settings.editor.cursorType,
+        renderLineHighlight: settings.editor.highlightCurrentLine ? 'all' : 'none',
+        lineNumbers: settings.editor.lineNumbers ? 'on' : 'off'
       })
 
       monacoInstance.current.onDidChangeModelContent(() => {
-        const newValue = model.getValue()
+        const newValue = model?.getValue() ?? ''
         if (newValue !== fileContentRef.current) {
-          onChange(newValue) 
+          onChange(newValue)
         }
       })
 
@@ -46,7 +71,33 @@ function MonacoEditor({ value, language, filePath, onChange }: MonacoEditorProps
       monacoInstance.current = null
       modelRef.current = null
     }
-  }, [filePath, language])
+  }, [filePath, language, value])
+
+  useEffect(() => {
+    if (monacoInstance.current) {
+      const editor = monacoInstance.current
+      const highlight = settings.editor.highlightCurrentLine ? 'all' : 'none'
+      const ln = settings.editor.lineNumbers ? 'on' : 'off'
+      const theme =
+        settings.editor.theme === 'light_1'
+          ? 'vs'
+          : settings.editor.theme === 'light_2'
+            ? 'hc-light'
+            : settings.editor.theme === 'dark_1'
+              ? 'vs-dark'
+              : 'hc-dark'
+
+      console.log(theme)
+
+      monaco.editor.setTheme(theme)
+      editor.updateOptions({
+        fontSize: settings.editor.fontSize,
+        cursorStyle: settings.editor.cursorType,
+        renderLineHighlight: highlight,
+        lineNumbers: ln
+      })
+    }
+  }, [settings])
 
   useEffect(() => {
     const model = modelRef.current
@@ -58,7 +109,7 @@ function MonacoEditor({ value, language, filePath, onChange }: MonacoEditorProps
         model.setValue(value)
       }
     }
-  }, [value, language]) 
+  }, [value, language])
 
   return <div ref={editorRef} style={{ height: '100vh', width: '100%' }} />
 }

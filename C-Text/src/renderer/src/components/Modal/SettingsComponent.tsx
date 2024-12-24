@@ -17,12 +17,18 @@ const settingsMetadata: SettingsMetadata = {
       desc: 'The theming affects appearance elements such as coloring, styling, fonts, etc.'
     },
     fontSize: {
-      type: 'number',
+      type: 'dropdown',
       label: 'Font Size',
+      options: ['small', 'medium', 'large'],
       desc: 'Font size for the C-Text app excluding the editor.'
     }
   },
   editor: {
+    theme: {
+      type: 'dropdown',
+      label: 'Editor Theme',
+      options: ['light_1', 'light_2', 'dark_1', 'dark_2']
+    },
     cursorType: {
       type: 'dropdown',
       label: 'Cursor Type',
@@ -90,7 +96,6 @@ function SettingsComponent({
     const updated = { ...localSettings, [category]: { ...localSettings[category], [key]: value } }
     setLocalSettings(updated)
     onUpdate(updated)
-    console.log('UPDATED: ', updated)
   }
 
   const capitalize = (v: string) => {
@@ -119,12 +124,8 @@ function SettingsComponent({
                 </select>
               )}
               {config.type === 'toggle' && (
-                <div className='settings-checkbox-container'>
-                  {localSettings[category][key] === true ? (
-                    <p>Enabled</p>
-                  ) : (
-                    <p>Disabled</p>
-                  )}
+                <div className="settings-checkbox-container">
+                  {localSettings[category][key] === true ? <p>Enabled</p> : <p>Disabled</p>}
                   <input
                     type="checkbox"
                     checked={localSettings[category][key]}
