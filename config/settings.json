@@ -11,7 +11,7 @@
     "fontSize": 12,
     "highlightCurrentLine": true,
     "lineNumbers": true,
-    "theme": "dark_1"
+    "theme": "dracula"
   },
   "defaultWorkspace": {
     "path": "C:\\Users\\epicn\\C-Text Projects"
