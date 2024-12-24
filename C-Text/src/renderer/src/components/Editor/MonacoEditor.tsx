@@ -574,7 +574,7 @@ function MonacoEditor({
       monacoInstance.current = null
       modelRef.current = null
     }
-  }, [filePath, language, value, settings]) // Ensure the effect is called when settings change
+  }, [filePath, language, settings]) // Ensure the effect is called when settings change
 
   // Update model language and value based on prop changes
   useEffect(() => {
