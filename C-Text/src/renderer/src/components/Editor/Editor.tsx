@@ -29,14 +29,13 @@ function Editor({ File, _settings, onSaveFile }: EditorProps): JSX.Element {
   // Handle hanges FROM editor TO the parent component
   useEffect(() => {
     if (File && File !== activeFile) {
-      setActiveFile(File) 
-      setFileContent(File.content)
+      setActiveFile(File)
+      setFileContent(File.content) // Set file content only when File changes
       fileContentRef.current = File.content
     }
   }, [File])
 
   const handleContentChange = (newContent: string) => {
-    setFileContent(newContent)
     fileContentRef.current = newContent
 
     if (typingTimeoutRef.current) {
@@ -45,30 +44,31 @@ function Editor({ File, _settings, onSaveFile }: EditorProps): JSX.Element {
 
     typingTimeoutRef.current = setTimeout(() => {
       handleSave()
-    }, 1000) 
+    }, 1000)
   }
 
   const handleSave = () => {
     if (activeFile && fileContentRef.current !== activeFile.content) {
       const updatedFile = { ...activeFile, content: fileContentRef.current }
-      onSaveFile(updatedFile) 
+      console.log('*******', updatedFile.content)
+      onSaveFile(updatedFile)
     }
   }
 
   return (
     <div className="editor-main">
-      {activeFile ? (
+      {File ? (
         <div className="file-chosen-editor-container">
           <div className="filename-editor-container">
             <p>
-              {activeFile.name} ({activeFile.path})
+              {File.name} ({File.path})
             </p>
           </div>
           <div className="editor-main-content-container">
             <MonacoEditor
-              value={activeFile.content}
-              language={getLanguageString(getFileExtension(activeFile.name))}
-              filePath={activeFile.path}
+              value={File.content}
+              language={getLanguageString(getFileExtension(File.name))}
+              filePath={File.path}
               _settings={settings}
               onChange={handleContentChange}
             />

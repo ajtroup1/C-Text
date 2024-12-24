@@ -12,11 +12,23 @@ import Loading from './Shared/Loading'
 
 function App(): JSX.Element {
   const [settings, setSettings] = useState<Settings | null>(null)
-  const [debugging, setDebugging] = useState<boolean>(true)
+  const [debugging, setDebugging] = useState<boolean>(false)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [modalMode, setModalMode] = useState<string>('settings')
   const [workspace, setWorkspace] = useState<Directory | null>(null)
   const [activeFile, setActiveFile] = useState<_File | null>(null)
+  const [tabbedFiles, setTabbedFiles] = useState<_File[]>([])
+  const [activeTabbedFileId, setActiveTabbedFileId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (activeFile) {
+      const found = tabbedFiles.find((f) => f.path == activeFile.path)
+      if (!found) {
+        tabbedFiles.push(activeFile)
+        setActiveTabbedFileId(activeFile.path)
+      }
+    }
+  }, [activeFile])
 
   // --------------------------------------------------------
   // RESIZING FOR EDITOR / BROSWER WIDTH
@@ -66,11 +78,43 @@ function App(): JSX.Element {
     })
   }, [settings])
 
+  const handleTabClick = (path: string) => {
+    setActiveTabbedFileId(path)
+    const foundFile = tabbedFiles.find((f) => f.path === path)
+    if (foundFile) {
+      setActiveFile(foundFile)
+    } else {
+      //
+    }
+  }
+
+  const handleTabClose = (index: number) => {
+    const updatedTabs = tabbedFiles.filter((_, i) => i !== index)
+    setTabbedFiles(updatedTabs)
+    if (updatedTabs.length > 0) {
+      const nextActiveFile = updatedTabs[0]
+      setActiveTabbedFileId(nextActiveFile.path)
+      setActiveFile(nextActiveFile)
+    } else {
+      setActiveTabbedFileId(null)
+      setActiveFile(null)
+    }
+  }
+
   const handleFileSelect = (file: _File) => {
     if (debugging) {
       console.log('Selected file from navbar: ', file)
     }
-    setActiveFile(file)
+
+    const found = tabbedFiles.find((f) => f.path === file.path)
+    if (found) {
+      setActiveFile(file)
+      setActiveTabbedFileId(file.path)
+    } else {
+      tabbedFiles.push(file)
+      setActiveFile(file)
+      setActiveTabbedFileId(file.path)
+    }
   }
 
   const handleFolderSelect = (folder: Directory) => {
@@ -151,6 +195,27 @@ function App(): JSX.Element {
           </div>
           <div className="resizer" ref={resizerRef}></div>
           <div className="editor-container" ref={editorRef}>
+            <div className="tabs-container">
+              {tabbedFiles.map((file, index) => (
+                <div
+                  key={index}
+                  className={`tab-container ${file.path === activeTabbedFileId ? 'active-tab' : ''}`}
+                  onClick={() => handleTabClick(file.path)}
+                >
+                  <p className="tab-name">{file.name}</p>
+                  <div
+                    className="close-tab-btn-container"
+                    onClick={(e) => {
+                      e.stopPropagation() 
+                      handleTabClose(index)
+                    }}
+                  >
+                    <p>x</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
             {settings && (
               <Editor File={activeFile} _settings={settings} onSaveFile={handleSaveFile} />
             )}

@@ -1,3 +1,75 @@
+.tabs-container {
+  padding-left: 2%;
+  padding-right: 2%;
+  display: flex;
+  gap: 0.5%;
+}
+
+.tab-container {
+  border-radius: 2px;
+  cursor: pointer;
+  background-color: rgb(93, 93, 93);
+  display: flex;
+  padding-left: 1%;
+  padding-right: 0.5%;
+  gap: 8px; /* Increase space between name and close button */
+  align-items: center; /* Vertically align content */
+  margin-bottom: -2%;
+  margin-top: 0.5%;
+  transition: background-color 0.2s ease-in-out; /* Smooth hover effect */
+  border: 2px solid transparent;
+}
+
+.tab-container.active-tab {
+  color: white; /* Adjust text color for contrast */
+  font-weight: bold;
+  border: 2px solid white; /* White border for active tab */
+}
+
+.tab-container.active-tab .tab-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: white; /* White line at the top of the tab */
+}
+
+.tab-container.active-tab,
+.tab-container:hover {
+  background-color: rgb(120, 120, 120); /* Slightly darker hover effect */
+}
+
+.tab-name {
+  flex-grow: 1; /* Ensures the name takes available space */
+  white-space: nowrap; /* Prevents text from wrapping */
+  overflow: hidden; /* Ensures the text stays within bounds */
+  text-overflow: ellipsis; /* Adds "..." for overflowed text */
+}
+
+.close-tab-btn-container {
+  border-radius: 30%;
+  padding: 0.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 20px; /* Adjust height to align with text */
+  width: 20px; /* Set width to match the close button's height */
+  transition: background-color 0.2s ease-in-out; /* Smooth hover effect */
+  margin-top: -15px;
+}
+
+.close-tab-btn-container:hover {
+  background-color: rgb(160, 160, 160); /* Slightly darker on hover */
+}
+
+.close-tab-btn-container p {
+  margin: 0;
+  color: white; /* White color for the "x" */
+  font-size: 1rem;
+}
+
 .editor-main {
   display: flex;
   justify-content: center;
@@ -33,9 +105,6 @@
   transform: scale(1.1); /* Scales the image slightly on hover */
 }
 
-
-
-
 .navbar-option:hover .dropdown {
   display: block;
 }
@@ -62,7 +131,8 @@
 .editor-main-content-container {
   background-color: var(--color-background);
   border-radius: 1%;
-  height: 94%;
+  height: 92%;
+  background-color: red;
   width: 99%;
 }
 

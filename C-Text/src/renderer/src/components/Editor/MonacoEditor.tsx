@@ -340,29 +340,38 @@ function MonacoEditor({
   const monacoInstance = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
   const modelRef = useRef<monaco.editor.ITextModel | null>(null)
   const fileContentRef = useRef<string>('')
+  const [localContent, setLocalContent] = useState<string>(value)
 
   useEffect(() => {
     setSettings(_settings)
   }, [_settings])
 
-  // Set theme when settings change and when Monaco is initialized
+  useEffect(() => {
+    const model = modelRef.current
+    if (model && model.getValue() !== value) {
+      model.setValue(value)
+    }
+  }, [value])
+
+  useEffect(() => {
+    onChange(localContent)
+  }, [localContent, onChange])
+
   useEffect(() => {
     if (settings.editor.theme === 'monokai') {
       monaco.editor.setTheme('monokai')
     }
-  }, [settings.editor.theme]) // This ensures theme is applied when settings change
+  }, [settings.editor.theme])
 
   useEffect(() => {
     if (editorRef.current && !monacoInstance.current) {
       const modelUri = monaco.Uri.file(filePath)
 
-      // Create or reuse the model only for the specific file
       let model = monaco.editor.getModel(modelUri)
       if (!model) {
-        model = monaco.editor.createModel(value, language, modelUri)
+        model = monaco.editor.createModel(localContent, language, modelUri)
       }
 
-      // Create Monaco editor instance with theme from settings
       monacoInstance.current = monaco.editor.create(editorRef.current, {
         model,
         theme:
@@ -574,9 +583,8 @@ function MonacoEditor({
       monacoInstance.current = null
       modelRef.current = null
     }
-  }, [filePath, language, settings]) // Ensure the effect is called when settings change
+  }, [filePath, language, settings])
 
-  // Update model language and value based on prop changes
   useEffect(() => {
     const model = modelRef.current
     if (model) {
@@ -585,6 +593,7 @@ function MonacoEditor({
       }
       if (model.getValue() !== value) {
         model.setValue(value)
+        setLocalContent(value)
       }
     }
   }, [value, language])
