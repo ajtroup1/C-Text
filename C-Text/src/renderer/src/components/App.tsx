@@ -12,7 +12,7 @@ import Loading from './Shared/Loading'
 
 function App(): JSX.Element {
   const [settings, setSettings] = useState<Settings | null>(null)
-  const [debugging, setDebugging] = useState<boolean>(false)
+  const [debugging, setDebugging] = useState<boolean>(true)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [modalMode, setModalMode] = useState<string>('settings')
   const [workspace, setWorkspace] = useState<Directory | null>(null)
@@ -68,7 +68,7 @@ function App(): JSX.Element {
 
   const handleFileSelect = (file: _File) => {
     if (debugging) {
-      console.log(file)
+      console.log('Selected file from navbar: ', file)
     }
     setActiveFile(file)
   }

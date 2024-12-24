@@ -7,6 +7,7 @@ I am currently writing this in my text editor!
 - Tabs (like windows not \t)
 - Loading icon
   - Especially when loading a workspace
+- Spotify integration
 - Reflect changes made in other editors (constantly refresh file content on machine?)
 - LSP 
 - Right click functionality in the browser

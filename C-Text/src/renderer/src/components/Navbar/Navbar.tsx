@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import '../../assets/css/navbar.css'
 import { Directory, _File, FileInfo, Folder } from '../../types/Directory.d'
 import Dropdown from './Dropdown'
-import { Menu, MenuItem } from '@mui/material'
+import { Menu, MenuItem, sliderClasses } from '@mui/material'
 
 interface NavbarProps {
   onSelectFile: (file: _File) => void
@@ -48,9 +48,21 @@ function Navbar({
           const fileContent = reader.result as string
 
           const fileWithContent: _File = {
-            ...selectedFile,
+            path: selectedFile.path,
+            lastModified: selectedFile.lastModified,
+            webkitRelativePath: selectedFile.webkitRelativePath,
+            size: selectedFile.size,
+            type: selectedFile.type,
+            arrayBuffer: selectedFile.arrayBuffer,
+            bytes: selectedFile.bytes,
+            slice: selectedFile.slice,
+            stream: selectedFile.stream,
+            text: selectedFile.text,
+            name: selectedFile.name,
             content: fileContent
           }
+
+          console.log('JJJJJJJJJ', fileWithContent)
 
           onSelectFile(fileWithContent)
         }
