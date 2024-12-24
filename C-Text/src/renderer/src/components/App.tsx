@@ -12,7 +12,7 @@ import Loading from './Shared/Loading'
 
 function App(): JSX.Element {
   const [settings, setSettings] = useState<Settings | null>(null)
-  const [debugging, setDebugging] = useState<boolean>(false)
+  const [debugging, setDebugging] = useState<boolean>(true)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [modalMode, setModalMode] = useState<string>('settings')
   const [workspace, setWorkspace] = useState<Directory | null>(null)
@@ -126,7 +126,7 @@ function App(): JSX.Element {
 
   const handleSaveFile = async (updatedFile: _File) => {
     if (debugging) {
-      console.log(updatedFile)
+      console.log('UPDATED FILE CONTENT:', updatedFile)
     }
     setActiveFile(updatedFile)
     await (window as any).electron.saveFile(updatedFile.path, updatedFile.content)

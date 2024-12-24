@@ -350,16 +350,18 @@ function MonacoEditor({
     const model = modelRef.current
     if (model && model.getValue() !== value) {
       model.setValue(value)
+      setLocalContent(value)
     }
   }, [value])
 
   useEffect(() => {
     onChange(localContent)
+    console.log('LOCAL CONTENT', localContent)
   }, [localContent, onChange])
 
   useEffect(() => {
-    if (settings.editor.theme === 'monokai') {
-      monaco.editor.setTheme('monokai')
+    if (settings.editor.theme) {
+      monaco.editor.setTheme(settings.editor.theme)
     }
   }, [settings.editor.theme])
 
