@@ -7,9 +7,10 @@ import getFileExtension from '@renderer/utils/getFileExtension'
 interface BrowserProps {
   Workspace: Directory | null
   selectFile: (fileoath: string) => void
+  onCloseWorkspace: () => void
 }
 
-function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
+function Browser({ Workspace, selectFile, onCloseWorkspace }: BrowserProps): JSX.Element {
   const [repo, setRepo] = useState<Directory | null>(null)
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set())
 
@@ -114,12 +115,18 @@ function Browser({ Workspace, selectFile }: BrowserProps): JSX.Element {
     }
   }
 
+  const handleCloseWorkspace = () => {
+    setRepo(null)
+    onCloseWorkspace()
+  }
+
   return (
     <div className="browser-main">
       {repo ? (
         <div className="dir-chosen-browser-container">
           <div className="repo-name-browser-container">
             <p>Workspace: {repo.name}</p>
+            <button className='btn btn-danger close-workspace-btn' onClick={handleCloseWorkspace}>Close Workspace</button>
           </div>
           <div className="dir-contents-container">{renderDirectory(repo, 0)}</div>
         </div>
