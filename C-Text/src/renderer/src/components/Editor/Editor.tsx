@@ -33,6 +33,9 @@ function Editor({ File, _settings, onSaveFile }: EditorProps): JSX.Element {
       setFileContent(File.content)
       fileContentRef.current = File.content
     }
+    if (!File) {
+      setActiveFile(null)
+    }
   }, [File])
 
   const handleContentChange = (newContent: string) => {

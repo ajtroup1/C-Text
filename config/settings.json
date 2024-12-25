@@ -8,7 +8,7 @@
   },
   "editor": {
     "cursorType": "line",
-    "fontSize": 12,
+    "fontSize": 14,
     "highlightCurrentLine": true,
     "lineNumbers": true,
     "theme": "dracula"

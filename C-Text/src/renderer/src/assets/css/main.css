@@ -123,3 +123,39 @@ code {
   scrollbar-width: thin;
   scrollbar-color: #3a3a3a #1e1e1e;
 }
+
+.tabs-container {
+  display: flex;
+  height: 4.5%;
+  gap: 0.5%;
+  margin-left: 2%;
+  width: 96%;
+  white-space: nowrap;
+}
+
+.tab {
+  padding-left: 1%;
+  padding-right: 2.25%;
+  display: inline-flex;
+  white-space: nowrap;
+  background-color: #262934;
+  flex-shrink: 0;
+}
+
+.tab p {
+  cursor: pointer;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.closebtn {
+  margin-left: 5%;
+  cursor: pointer;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+.closebtn:hover {
+  background-color: #c1c1c1;
+  border-radius: 50%;
+}

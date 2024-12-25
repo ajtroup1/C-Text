@@ -4,9 +4,14 @@ I am currently writing this in my text editor!
 
 # TODO
 
-- Tabs (like windows not \t)
+- Tabs scrolling horizontal not working
+  - Overflow-x disables tabs?
 - Loading icon
   - Especially when loading a workspace
+- Shortcuts:
+  - CTRL+W to close tab
+  - CTRL+S (for formatting)
+- Disable lsp and autocomplete on certain file types like md
 - Reflect changes made in other editors (constantly refresh file content on machine?)
 - LSP 
 - Right click functionality in the browser
