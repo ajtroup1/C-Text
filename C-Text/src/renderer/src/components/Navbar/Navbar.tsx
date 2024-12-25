@@ -3,6 +3,7 @@ import '../../assets/css/navbar.css'
 import { Directory, _File, FileInfo, Folder } from '../../types/Directory.d'
 import Dropdown from './Dropdown'
 import { Menu, MenuItem } from '@mui/material'
+import { Settings } from '@renderer/types/Settings.d'
 
 interface NavbarProps {
   onSelectFile: (file: _File) => void
@@ -10,6 +11,7 @@ interface NavbarProps {
   openTerminal: () => void
   openSettings: () => void
   saveDocument: () => void
+  settings: Settings
 }
 
 function Navbar({
@@ -17,7 +19,8 @@ function Navbar({
   onSelectFolder,
   openTerminal,
   openSettings,
-  saveDocument
+  saveDocument,
+  settings
 }: NavbarProps): JSX.Element {
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null)
   const [menuType, setMenuType] = useState<string | null>(null)
@@ -141,7 +144,7 @@ function Navbar({
       </div>
       <div className="right-navbar">
         <div className="search-bar-container-navbar">
-          <input type="text" />
+          <input type="text" className={`${settings.appearance.theme === 'light' ? 'white-searchbar' : 'dark-searchbar'}`}/>
         </div>
         <div className="settings-icon-navbar-container" onClick={openSettings}>
           <img src="../../src/assets/images/settings-icon.png" id="settings-icon-navbar" />

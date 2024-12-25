@@ -14,7 +14,7 @@ code {
   font-weight: 600;
   padding: 3px 5px;
   border-radius: 2px;
-  background-color: var(--color-background-mute);
+  /* background-color: var(--color-background-mute); */
   font-family:
     ui-monospace,
     SFMono-Regular,
@@ -59,13 +59,13 @@ code {
 }
 
 .lower-main {
+  border-top: 4px solid;
   height: 95vh;
   flex-grow: 1;
   display: flex;
 }
 
 .browser-container {
-  background-color: #262934;
   flex-basis: 50%;
 }
 

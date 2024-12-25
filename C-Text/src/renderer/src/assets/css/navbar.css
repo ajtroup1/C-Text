@@ -2,6 +2,7 @@
   display: flex;
   width: 100vw;
   height: 5vh;
+  border-bottom: #2e2e2e 4px;
 }
 
 .navbar-options {
@@ -77,7 +78,7 @@
   margin-left: 6%;
 }
 
-.search-bar-container-navbar input {
+.dark-searchbar {
   width: 100%; /* Full width of the container */
   height: 100%; /* Full height of the container */
   padding: 8px 12px; /* Add padding for better spacing */
@@ -89,8 +90,26 @@
   transition: all 0.3s ease; /* Smooth transition for focus */
 }
 
-.search-bar-container-navbar input:focus {
+.dark-searchbar:focus {
   border-color: #4e8ef7; /* Light blue border on focus */
   background-color: #3a3a3a; /* Slightly lighter background on focus */
+  outline: none; /* Remove default focus outline */
+}
+
+.white-searchbar {
+  width: 100%; /* Full width of the container */
+  height: 100%; /* Full height of the container */
+  padding: 8px 12px; /* Add padding for better spacing */
+  font-size: 16px; /* Adjust font size */
+  border: 2px solid #444; /* Subtle border */
+  border-radius: 20px; /* Rounded corners */
+  background-color: white; /* Dark background */
+  color: black; /* Text color */
+  transition: all 0.3s ease; /* Smooth transition for focus */
+}
+
+.white-searchbar:focus {
+  border-color: #4e8ef7; /* Light blue border on focus */
+  background-color: rgb(233, 233, 233); /* Slightly lighter background on focus */
   outline: none; /* Remove default focus outline */
 }

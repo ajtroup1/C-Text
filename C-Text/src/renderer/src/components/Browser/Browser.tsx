@@ -3,16 +3,25 @@ import '../../assets/css/browser.css'
 import { useState, useEffect } from 'react'
 import returnImgPath from '@renderer/utils/getFileIcon'
 import getFileExtension from '@renderer/utils/getFileExtension'
+import { Settings } from '@renderer/types/Settings.d'
 
 interface BrowserProps {
   Workspace: Directory | null
   selectFile: (fileoath: string) => void
   onCloseWorkspace: () => void
+  settings: Settings
 }
 
-function Browser({ Workspace, selectFile, onCloseWorkspace }: BrowserProps): JSX.Element {
+function Browser({ Workspace, selectFile, onCloseWorkspace, settings }: BrowserProps): JSX.Element {
   const [repo, setRepo] = useState<Directory | null>(null)
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set())
+  const [loadingSettings, setLoadingSettings] = useState<boolean>(true)
+
+  useEffect(() => {
+    if (settings) {
+      setLoadingSettings(false)
+    }
+  }, [settings])
 
   useEffect(() => {
     if (Workspace) {
@@ -65,7 +74,11 @@ function Browser({ Workspace, selectFile, onCloseWorkspace }: BrowserProps): JSX
                     {
                       <div className="file-type-icon-browser-container">
                         <img
-                          src={file.name.toLowerCase() === 'makefile' ? returnImgPath('makefile') : returnImgPath(getFileExtension(file.name))}
+                          src={
+                            file.name.toLowerCase() === 'makefile'
+                              ? returnImgPath('makefile')
+                              : returnImgPath(getFileExtension(file.name))
+                          }
                           id="file-type-icon-browser"
                         />
                       </div>
@@ -104,7 +117,6 @@ function Browser({ Workspace, selectFile, onCloseWorkspace }: BrowserProps): JSX
 
     if (selectedFile) {
       console.log('File found:', selectedFile)
-      // Check for binary extensions
       if (binaryFileExtensions.test(selectedFile.name)) {
         alert(`The selected file (${selectedFile.name}) cannot be displayed.`)
         return
@@ -121,12 +133,14 @@ function Browser({ Workspace, selectFile, onCloseWorkspace }: BrowserProps): JSX
   }
 
   return (
-    <div className="browser-main">
+    <div className={`browser-main`}>
       {repo ? (
-        <div className="dir-chosen-browser-container">
-          <div className="repo-name-browser-container">
+        <div className={`dir-chosen-browser-container ${settings.appearance.theme === 'light' && 'bg-white'}`}>
+          <div className={`repo-name-browser-container ${settings.appearance.theme === 'light' && 'bg-gray-300 text-black'}`}>
             <p>Workspace: {repo.name}</p>
-            <button className='btn btn-danger close-workspace-btn' onClick={handleCloseWorkspace}>Close Workspace</button>
+            <button className="btn btn-danger close-workspace-btn" onClick={handleCloseWorkspace}>
+              Close Workspace
+            </button>
           </div>
           <div className="dir-contents-container">{renderDirectory(repo, 0)}</div>
         </div>

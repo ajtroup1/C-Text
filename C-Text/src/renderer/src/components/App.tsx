@@ -164,20 +164,26 @@ function App(): JSX.Element {
     <ThemeProvider theme={{ mode: settings?.appearance.theme }}>
       <div className="main">
         {settings && <GlobalStyle settings={settings} />}
-        <Navbar
-          onSelectFile={handleFileSelect}
-          onSelectFolder={handleFolderSelect}
-          openTerminal={openTerminal}
-          openSettings={handleOpenSettings}
-          saveDocument={saveDocument}
-        />
+        {settings && (
+          <Navbar
+            onSelectFile={handleFileSelect}
+            onSelectFolder={handleFolderSelect}
+            openTerminal={openTerminal}
+            openSettings={handleOpenSettings}
+            saveDocument={saveDocument}
+            settings={settings}
+          />
+        )}
         <div className="lower-main" ref={lowerMainRef}>
           <div className="browser-container" ref={browserRef}>
-            <Browser
-              Workspace={workspace}
-              selectFile={handleBrowserFileSelect}
-              onCloseWorkspace={onCloseWorkspace}
-            />
+            {settings && (
+              <Browser
+                Workspace={workspace}
+                selectFile={handleBrowserFileSelect}
+                onCloseWorkspace={onCloseWorkspace}
+                settings={settings}
+              />
+            )}
           </div>
           <div className="resizer" ref={resizerRef}></div>
           <div className="editor-container" ref={editorRef}>

@@ -62,7 +62,7 @@ function Editor({ File, _settings, onSaveFile }: EditorProps): JSX.Element {
     <div className="editor-main">
       {activeFile ? (
         <div className="file-chosen-editor-container">
-          <div className="filename-editor-container">
+          <div className={`filename-editor-container ${settings.appearance.theme === 'light' ? 'filename-editor-container-light' : 'filename-editor-container-dark'}`}>
             <p>
               {activeFile.name} ({activeFile.path})
             </p>
