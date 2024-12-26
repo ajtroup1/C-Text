@@ -126,16 +126,35 @@ code {
 
 .tabs-container {
   display: flex;
-  height: 4.5%;
+  min-height: 5.5%;
   gap: 0.5%;
   margin-left: 2%;
   width: 96%;
   white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+}
+
+.tabs-container::-webkit-scrollbar {
+  height: 4px; 
+}
+
+.tabs-container::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+.tabs-container::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.5); 
+  border-radius: 10px; 
+  border: 2px solid transparent;
+  background-clip: content-box; 
 }
 
 .tab {
   padding-left: 1%;
-  padding-right: 2.25%;
+  padding-right: 3%;
   display: inline-flex;
   white-space: nowrap;
   background-color: #515151;
@@ -153,6 +172,8 @@ code {
   cursor: pointer;
   padding-left: 5%;
   padding-right: 5%;
+  padding-bottom: 5%;
+  height: 65%;
 }
 
 .closebtn:hover {

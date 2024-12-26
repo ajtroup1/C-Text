@@ -24,6 +24,7 @@
   max-height: 70%;
   color: white;
   position: absolute;
+  width: 50%;
 }
 
 .close-btn {
@@ -210,4 +211,15 @@ pre {
 #decline-settings-btn {
   position: absolute;
   left: 3%;
+}
+
+.settings-description {
+  font-size: 0.8rem;
+  margin-top: 1.5%;
+  font-style: italic;
+  text-align: center;
+}
+
+.negative-margin-settings {
+  margin-top: -2%;
 }

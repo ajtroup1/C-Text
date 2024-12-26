@@ -149,6 +149,9 @@ function SettingsComponent({
   onUpdate: (newSettings: Settings) => void
 }) {
   const [localSettings, setLocalSettings] = useState(settings)
+  const [currentDesc, setCurrentDesc] = useState<string | null>(null)
+
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null)
 
   const handleChange = (category: string, key: string, value: any) => {
     const updated = { ...localSettings, [category]: { ...localSettings[category], [key]: value } }
@@ -160,13 +163,33 @@ function SettingsComponent({
     return v.charAt(0)?.toUpperCase() + v.slice(1)
   }
 
+  const renderSettingsDesc = (desc?: string | null): void => {
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+      setTimeoutId(null)
+    }
+    if (desc) {
+      setCurrentDesc(desc)
+    } else {
+      const id = setTimeout(() => {
+        setCurrentDesc(null)
+      }, 300)
+      setTimeoutId(id)
+    }
+  }
+
   return (
     <div className="settings-form">
       {Object.entries(settingsMetadata).map(([category, fields]) => (
         <div key={category} className="settings-category">
           <h3 className="settings-category">{capitalize(category)}</h3>
           {Object.entries(fields).map(([key, config]) => (
-            <div key={key} className="settings-item">
+            <div
+              key={key}
+              className="settings-item"
+              onMouseEnter={() => renderSettingsDesc(config?.desc)}
+              onMouseLeave={() => renderSettingsDesc(null)}
+            >
               <label className="settings-option">{config.label}</label>
               {config.type === 'dropdown' && (
                 <select
@@ -204,6 +227,11 @@ function SettingsComponent({
                   value={localSettings[category][key]}
                   onChange={(e) => handleChange(category, key, e.target.value)}
                 />
+              )}
+              {config?.desc && currentDesc === config.desc && (
+                <div className={`settings-description ${config.type === 'toggle' && 'negative-margin-settings'}`}>
+                  <p>{currentDesc}</p>
+                </div>
               )}
             </div>
           ))}
