@@ -48,5 +48,22 @@
     "react-dom": "^18.3.1",
     "typescript": "^5.5.2",
     "vite": "^5.3.1"
+  },
+  "build": {
+    "appId": "com.my-website.my-app",
+    "productName": "Clear Text",
+    "win": {
+      "icon": "./src/renderer/src/assets/geometric-logo-abstract-2ba9b8.ico"
+    },
+    "files": [
+      "./build/**/*",
+      "./dist/**/*",
+      "./node_modules/**/*",
+      "./public/**/*",
+      "*.js"
+    ],
+    "directories": {
+      "buildResources": "public"
+    }
   }
 }

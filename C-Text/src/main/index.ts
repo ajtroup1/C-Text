@@ -6,6 +6,8 @@ import icon from '../../resources/icon.png?asset'
 const path = require('path')
 const fs = require('fs')
 
+const isFullscreen = process.env.ELECTRON_FULLSCREEN === 'true';
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -13,11 +15,13 @@ function createWindow(): void {
     height: 670,
     show: false,
     autoHideMenuBar: true,
+    fullscreen: isFullscreen,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
-    }
+    },
+    icon: join(__dirname, 'assets/geometric-logo-abstract-2ba9b8.ico')
   })
 
   mainWindow.on('ready-to-show', () => {

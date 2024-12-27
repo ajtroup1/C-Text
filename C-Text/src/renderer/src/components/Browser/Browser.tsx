@@ -48,7 +48,7 @@ function Browser({ Workspace, selectFile, onCloseWorkspace, settings }: BrowserP
     return (
       <div key={folderPath}>
         <div
-          style={{ paddingLeft: `${level * 10}px`, cursor: 'pointer', marginBottom: '2%' }}
+          style={{ paddingLeft: `${level * 5}px`, cursor: 'pointer', marginBottom: '2%' }}
           onClick={() => toggleFolder(folderPath)}
         >
           <span style={{ paddingRight: '0.7%' }}>
@@ -62,7 +62,7 @@ function Browser({ Workspace, selectFile, onCloseWorkspace, settings }: BrowserP
         </div>
 
         {expandedFolders.has(folderPath) && (
-          <div style={{ paddingLeft: `${(level + 1) * 10}px` }}>
+          <div style={{ paddingLeft: `${(level + 1) * 5}px` }}>
             {/* Render files */}
             {directory.files &&
               directory.files.map((file) => (
@@ -135,8 +135,12 @@ function Browser({ Workspace, selectFile, onCloseWorkspace, settings }: BrowserP
   return (
     <div className={`browser-main`}>
       {repo ? (
-        <div className={`dir-chosen-browser-container ${settings.appearance.theme === 'light' && 'bg-white'}`}>
-          <div className={`repo-name-browser-container ${settings.appearance.theme === 'light' && 'bg-gray-300 text-black'}`}>
+        <div
+          className={`dir-chosen-browser-container ${settings.appearance.theme === 'light' && 'bg-white'}`}
+        >
+          <div
+            className={`repo-name-browser-container ${settings.appearance.theme === 'light' && 'bg-gray-300 text-black'}`}
+          >
             <p>Workspace: {repo.name}</p>
             <button className="btn btn-danger close-workspace-btn" onClick={handleCloseWorkspace}>
               Close Workspace

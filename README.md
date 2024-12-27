@@ -1,25 +1,41 @@
-# C-Text
+# Clear Text
 
 I am currently writing this in my text editor!
 
-# TODO
+Clear Text is a simple code editor with basic basic additions to help with developing projects
 
-- Tabs scrolling horizontal not working
-  - Overflow-x disables tabs?
-- Loading icon
-  - Especially when loading a workspace
-- Shortcuts:
-  - CTRL+W to close tab
-  - CTRL+S (for formatting)
-- Disable lsp and autocomplete on certain file types like md
-- Reflect changes made in other editors (constantly refresh file content on machine?)
-- LSP 
-- Right click functionality in the browser
-- Git integration (expert level difficulty) 
-- Markdown preview
-- HTML page renderer
-- Drag and drop support
-  - Drag a file into another folder
-  - Drag something from external apps and put it into the editor's browser
-- Takes a while to load in a workspace
-- Improve light mode (C-Text not Monaco Editor)
+## Features
+
+- Workspace architecture
+- Project file browser
+- Modern text editor with:
+  - LSP integration
+  - Diverse theming
+  - Shortcut abilities (CTRL+F, CTRL+L, ...)
+  - *And using <a href="https://microsoft.github.io/monaco-editor/">Monaco Editor</a>*
+- Terminal integration
+
+## Installation
+
+To install and use Clear Text
+
+1. Clone the repo:
+```sh
+git clone https://github.com/ajtroup1/C-Text.git
+```
+
+2. Navigate to the appropriate project directory
+  
+```sh
+cd user/folder/C-Text <--- Replace with where you cloned with repo
+```
+
+3. Install npm and dependencies
+```sh
+npm install
+```
+
+4. Start the application
+```sh
+npm start
+```

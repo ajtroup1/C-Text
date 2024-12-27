@@ -14,7 +14,6 @@ code {
   font-weight: 600;
   padding: 3px 5px;
   border-radius: 2px;
-  /* background-color: var(--color-background-mute); */
   font-family:
     ui-monospace,
     SFMono-Regular,
@@ -83,43 +82,39 @@ code {
   user-select: none;
 }
 
-/* Apply to the entire page or specific elements */
 ::-webkit-scrollbar {
-  width: 8px; /* Width of the scrollbar */
-  height: 8px; /* Height of the horizontal scrollbar */
+  width: 8px; 
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1e1e1e; /* Dark gray track */
-  border-radius: 10px; /* Rounded corners for the track */
+  background: #1e1e1e;
+  border-radius: 10px; 
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3a3a3a; /* Lighter gray thumb */
-  border-radius: 20px; /* Rounded corners for the thumb */
-  border: 2px solid #1e1e1e; /* Adds a border to give the thumb a floating effect */
+  background: #3a3a3a; 
+  border-radius: 20px;
+  border: 2px solid #1e1e1e; 
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #565656; /* Slightly lighter shade for hover */
+  background: #565656; 
 }
 
-/* Optional: Scrollbar corner styling for when both vertical and horizontal scrollbars are visible */
 ::-webkit-scrollbar-corner {
-  background: #1e1e1e; /* Matches the track background */
+  background: #1e1e1e; 
 }
 
-/* Firefox scrollbar styling */
 * {
-  scrollbar-width: thin; /* Slim scrollbar */
-  scrollbar-color: #c1c1c1 #1e1e1e; /* Thumb color and track color */
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #1e1e1e; 
 }
 
-/* Example for a specific container */
 .scroll-container {
   width: 100%;
   height: 300px;
-  overflow-y: scroll; /* Enable vertical scrolling */
+  overflow-y: scroll;
   scrollbar-width: thin;
   scrollbar-color: #3a3a3a #1e1e1e;
 }
@@ -154,25 +149,27 @@ code {
 
 .tab {
   padding-left: 1%;
-  padding-right: 3%;
+  padding-right: 1%;
   display: inline-flex;
   white-space: nowrap;
-  background-color: #515151;
+  background-color: #999999;
   flex-shrink: 0;
+  display: flex;
 }
 
 .tab p {
   cursor: pointer;
   white-space: nowrap;
   margin: 0;
+  flex-grow: 1;
 }
 
 .closebtn {
-  margin-left: 5%;
   cursor: pointer;
-  padding-left: 5%;
-  padding-right: 5%;
-  padding-bottom: 5%;
+  margin-left: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  height: auto;
   height: 65%;
 }
 
